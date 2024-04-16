@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Manage.Internal
+@using RLBW_ERP.Areas.Identity.Pages.Account;
+@inject SignInManager<IdentityUser> SignInManager
+@model IEnumerable<IdentityUser>
+
+<h1>Usuários Cadastrados</h1>
+<a class="btn btn-info" asp-area="Identity" asp-page="/Account/Register">Adicionar usuário</a>
+<br />
+<table class="table table-striped" id="userTable">
+    <thead>
+        <tr>
+            <th>
+                Usuário
+            </th>
+            <th>
+                Usuário Ativo
+            </th>
+            <th >
+                Ações
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    <a>
+                        @user.UserName
+                    </a>
+                </td>
+                <td>
+                    <div class="form-check m-1">
+                        <input type="checkbox" asp-for=@user.EmailConfirmed class="form-check-input" disabled/>
+                    </div>
+                </td>
+                <td>
+                    <a asp-controller="userroles" asp-action="Index" asp-route-userId="@user.Id">Gerenciar Permissões</a>
+                    <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" asp-route-userId="@user.Id">Alterar Senha</a>
+                    <a asp-controller="users" asp-action="ChangeStatus" asp-route-userId="@user.Id">Alterar Status</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

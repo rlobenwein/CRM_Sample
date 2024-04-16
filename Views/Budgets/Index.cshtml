@@ -1,0 +1,58 @@
+﻿@model IEnumerable<RLBW_ERP.Models.ViewModels.BudgetIndexViewModel>
+
+@{
+    ViewBag.Title = "Orçamentos anuais";
+}
+
+<h2>Orçamentos Anuais</h2>
+<a class="btn btn-sm btn-outline-secondary" id="CreateBudget">Cadastrar</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalBudget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BudgetItems)
+            </th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalBudget)
+                </td>
+                <td>
+                    @item.BudgetItems.Count
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-year="@item.Year">Detalhes</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="EditBudget" asp-route-year="@item.Year">Editar</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="DeleteRange" asp-route-year="@item.Year">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="modal" class="modal fade" role="dialog" />
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).on('click', '#CreateBudget', function () {
+            var url = '@ViewBag.Url' + '/Budgets/CreateBudget';
+            OpenModal(url, '#modal');
+        });
+
+
+    </script>
+                    }

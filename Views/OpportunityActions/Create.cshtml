@@ -1,0 +1,104 @@
+﻿@using static RLBW_ERP.Models.SalesModels.OpportunityAction
+@model RLBW_ERP.Models.SalesModels.OpportunityAction
+
+<div class="container">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form asp-action="Create" class="myForm" method="post">
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="OpportunityId" />
+                    <h5>Nova ação para a Oportunidade @Html.DisplayFor(modelItem => Model.OpportunityId)</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <div class="row input-group mb-3">
+                        <div class="col-6 col-md-4 input-group mb-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Date)</span>
+                                <input asp-for="Date" value="@Model.Date.ToString("yyyy-MM-dd HH:mm")" class="form-control" min="01-11-2016" max="31-12-2099" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.ActionTypeId)</span>
+                                <select class="form-control" asp-for="ActionTypeId" asp-items="ViewBag.ActionTypeId">
+                                </select>
+                                <span asp-validation-for="ActionTypeId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 input-group mb-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.PipelineId)</span>
+                                <select class="form-control" asp-for="PipelineId" asp-items="ViewBag.PipelineId">
+                                    <option selected>Selecione</option>
+                                </select>
+                                <span asp-validation-for="PipelineId" class="text-danger"></span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.PersonId)</span>
+                                <select asp-for="PersonId" class="form-control" asp-items="@ViewBag.PersonId">
+                                    <option selected value=0>Selecione</option>
+                                </select>
+                                <span asp-validation-for="PersonId" class="text-danger"></span>
+                                <button class="btn btn-sm btn-success CreatePerson" data-companyId="@ViewBag.CompanyId">+</button>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-4 input-group mb-3">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text">@Html.DisplayNameFor(modelItem => Model.ErpUserId)</label>
+                                <select class="form-control" asp-for="ErpUserId" asp-items="ViewBag.ErpUserId">
+                                    <option selected>Selecione</option>
+                                </select>
+                                <span asp-validation-for="ErpUserId" class="text-danger"></span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <label class="input-group-text">@Html.DisplayNameFor(modelItem => Model.Status)</label>
+                                <select class="form-control" asp-for="Status" asp-items="@Html.GetEnumSelectList<ActionStatus>()">
+                                    <option selected>Selecione</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row input-group mb-3">
+                        <div class="col-6 col-md-4 input-group mb-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Recorrência</span>
+                                <select class="form-control" id="recurrenceType" name="recurrenceType" asp-items="@Html.GetEnumSelectList<RecurrenceType>()">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 input-group mb-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Quantidade:</span>
+                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="100" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row input-group mb-3">
+                        <div class="col">
+                            <div class="input-group">
+                                <span class="input-group-text">Descrição</span>
+                                <textarea asp-for="Description" class="form-control" aria-label="Descrição" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col">
+                        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

@@ -1,0 +1,107 @@
+﻿@model IEnumerable<RLBW_ERP.Models.ViewModels.PlannedActionsViewModel>
+@{
+    string actionStatus;
+
+}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Oportunidade</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Contato</th>
+            <th>Responsável</th>
+            <th style="max-width: 800px">Descrição</th>
+            <th>Pipeline</th>
+            <th>Situação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            switch (item.PlannedStatus)
+            {
+                case "Atrasada":
+                    actionStatus = "ActionStatusDelayed";
+                    break;
+                case "Hoje":
+                    actionStatus = "ActionStatusPlanned";
+                    break;
+                case "Amanhã":
+                    actionStatus = "ActionStatusTomorow";
+                    break;
+                default:
+                    actionStatus = "font-weight-normal";
+                    break;
+            }
+
+            <tr class="@actionStatus">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@item.Opportunity.Id">@Html.DisplayFor(modelItem => item.Opportunity.Id)</a>
+                    @if (item.Opportunity.Title != null)
+                    {
+                        <p>
+                            (@Html.DisplayFor(modelItem => item.Opportunity.Title))
+                        </p>
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Companies" asp-action="Details" asp-route-id="@item.Company.Id">@Html.DisplayFor(modelItem => item.Company.FriendlyName)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActionTypeName)
+                </td>
+                <td>
+                    @if (item.Person != null)
+                    {
+                        var personInfo = item.Person.CompanyEmployees.First(c => c.PersonId == item.Person.Id && c.CompanyId == item.Company.Id);
+                        var mobile = personInfo.CellPhone;
+                        var email = personInfo.WorkEmail;
+                        var workPhone = personInfo.WorkPhone;
+                        string infoToShow = "Cel: " + mobile + "\nFixo: " + workPhone + "\nE-mail: " + email;
+
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="@infoToShow">
+                            @Html.DisplayFor(modelItem => item.Person.FullName)
+                        </a>
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ErpUser.Name)
+                </td>
+                <td>
+                    @Html.Raw(item.Description.Replace(Environment.NewLine, "<br/>"))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PipelineStage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlannedStatus)
+                </td>
+                <td>
+                    <div class="btn-group dropleft">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="/img/menu.svg" width="16" height="16">
+                        </button>
+                        <div class="dropdown-menu">
+                            <div class="list-group">
+                                <a data-opportunityAction="@item.ActionId" class="dropdown-item EditAction">Editar</a>
+
+                                <div class="dropdown-divider"></div>
+                                <a data-opportunityAction="@item.ActionId" data-days="1" class="dropdown-item DelayAction">Adiar - amanhã</a>
+                                <a data-opportunityAction="@item.ActionId" data-days="7" class="dropdown-item DelayAction">Adiar 1 semana</a>
+                                <a data-opportunityAction="@item.ActionId" data-days="30" class="dropdown-item DelayAction">Adiar 1 mês</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

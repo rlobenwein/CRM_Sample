@@ -1,0 +1,76 @@
+﻿@model RLBW_ERP.Models.SalesModels.Opportunity
+
+<div class="container">
+    <div class="modal-fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="Create" class="myForm" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Excluir Oportunidade @Model.Id: Tem certeza?</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <hr />
+                    </div>
+                    <div class="modal-body">
+                        <dl class="row">
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Date)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Date)
+                            </dd>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Company)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Company.FriendlyName)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Product)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Product.Name)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Value)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Value)
+                            </dd>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Manager)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Manager.Name)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Pipeline)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Pipeline.Stage)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Status)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Status)
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col">
+                        <h6>Esta ação não poderá ser desfeita!</h6>
+                            <input type="submit" value="EXCLUIR" class="btn btn-sm btn-danger" />
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

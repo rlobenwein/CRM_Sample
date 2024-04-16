@@ -1,0 +1,151 @@
+﻿@model RLBW_ERP.Models.SalesModels.SubproductsList
+
+<div class="container">
+    <div class="modal-fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-action="Details" class="myForm" method="post">
+                    <div class="modal-header">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <h5 class="modal-title">@Model.ProposalProduct.Category.CategoryName @Model.ProposalProduct.Product.Name @Model.SubProduct.Name</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <hr />
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group mb-2">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>
+                                                @Html.DisplayNameFor(model => model.Quantity):
+                                            </strong>
+                                            @Html.DisplayFor(model => model.Quantity)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-2">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>
+                                                @Html.DisplayNameFor(model => model.BasePrice):
+                                            </strong>
+                                            @Html.DisplayFor(model => model.BasePrice)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>
+                                                @Html.DisplayNameFor(model => model.Price):
+                                            </strong>
+                                            @Html.DisplayFor(model => model.Price)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @if (Model.Params != null && Model.Params.Count != 0)
+                                {
+                                    <hr />
+                                    <h6>
+                                        Parâmetros
+                                        <a class="btn btn-sm btn-outline-secondary SoftwareParamsEdit" data-SubproductListId="@Model.Id">Editar</a>
+                                        <a class="btn btn-sm btn-outline-secondary SoftwareParamsDelete" data-SubproductListId="@Model.Id">Excluir</a>
+                                    </h6>
+                                    @foreach (var item in Model.Params)
+                                    {
+                                        <div class="input-group">
+                                            <div class="col">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">
+                                                        @Html.DisplayFor(modelItem=>item.LicenseTime.Time) - @Html.DisplayFor(modelItem=>item.TimeQuantity) ano(s)
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        @Html.DisplayFor(modelItem=>item.LicenseNetworkType.NetworkType) - @Html.DisplayFor(modelItem=>item.Seats) assento(s)
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        @Html.DisplayFor(modelItem=>item.CommercialLicense.Type)
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">
+                                                        @Html.DisplayNameFor(modelItem=>item.Cores): @Html.DisplayFor(modelItem=>item.Cores)
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        @Html.DisplayNameFor(modelItem=>item.Tasks): @Html.DisplayFor(modelItem=>item.Tasks)
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        @Html.DisplayNameFor(modelItem=>item.Workbenchs): @Html.DisplayFor(modelItem=>item.Workbenchs)
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else if (Model.SubProduct.ProductId == 2 || Model.SubProduct.ProductId == 4)
+                                {
+                                    <h6>Parâmetros <a class="btn btn-sm btn-outline-secondary SoftwareParamsCreate" data-SubproductListId="@Model.Id">Incluir</a></h6>
+                                }
+                                else
+                                {
+                                    <h6>Parâmetros não disponíveis</h6>
+                                }
+
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col">
+                                @if (Model.Optionals != null && Model.Optionals.Count != 0)
+                                {
+                                    <h6>Opcionais <a class="btn btn-sm btn-outline-secondary OptionalsCreate" data-SubproductListId="@Model.Id">Incluir</a></h6>
+                                    <div class="input-group mb-3">
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (var item in Model.Optionals)
+                                            {
+                                                <li class="list-group-item">
+                                                    @Html.DisplayFor(modelItem=>item.LicenseOptional.OptionalName) (@Html.DisplayFor(modelItem=>item.Quantity) x @Html.DisplayFor(modelItem=>item.BasePrice))
+                                                    <a class="btn btn-sm btn-outline-secondary OptionalsEdit" data-SubproductListId="@item.SubproductsListId" data-OptionalId="@item.OptionalId">Editar</a>
+                                                    <a class="btn btn-sm btn-outline-secondary OptionalsDelete" data-SubproductListId="@item.SubproductsListId" data-OptionalId="@item.OptionalId">Excluir</a>
+                                                </li>
+
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                                else if (Model.SubProduct.ProductId == 2 || Model.SubProduct.ProductId == 4)
+                                {
+                                    <h6>Opcionais <a class="btn btn-sm btn-outline-secondary OptionalsCreate" data-SubproductListId="@Model.Id">Incluir</a></h6>
+                                }
+                                else
+                                {
+                                    <h6>Opcionais não disponíveis</h6>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group col">
+                            <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                            <a class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</a>
+                            <a class="btn btn-sm btn-outline-secondary SubproductListItemEdit" data-SubproductListId=@Model.Id>Editar</a>
+                            <a class="btn btn-sm btn-outline-danger SubproductListItemDelete" data-SubproductListId=@Model.Id>Excluir</a>
+                            <a class="btn btn-sm btn-outline-secondary ProposalProductDetails" data-ProposalProductId=@Model.ProposalProductId>Voltar</a>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+﻿@model IEnumerable<RLBW_ERP.Models.ViewModels.PlannedActionsViewModel>
+
+@{
+    ViewData["Title"] = "Lista de Tarefas";
+    var currentFilter = ViewData["CurrentFilter"];
+    var status = ViewData["Status"];
+}
+<h5>Ações planejadas</h5>
+
+<form asp-action="Index" method="get" class="myForm">
+    <div class="form-actions no-color">
+        <div class="row align-content-start">
+            <div class="col-md-3">
+                <label for="searchString">Filtrar (Empresas/contatos):</label>
+                <input id="searchString" type="text" name="searchString" class="filterFields" value="@currentFilter" />
+            </div>
+            <div class="col-md-2">
+                <label for="ErpUserId">Responsável</label>
+                <select class="filterFields" id="ErpUserSelect" asp-items="@ViewBag.ErpUser">
+                    <option selected value=0>Todos</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="actionStatus">Situação</label>
+                <select class="filterFields" id="actionStatus">
+                    <option selected value="Todas">Todos</option>
+                    <option value="Atrasada">Atrasadas</option>
+                    <option value="Hoje">Hoje</option>
+                    <option value="Em dia">Em dia</option>
+                    <option value="Amanhã">Amanhã</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="DateStart">De</label>
+                <input class="filterFields" type="date" id="DateStart" />
+            </div>
+            <div class="col-md-2">
+                <label for="DateEnd">Até</label>
+                <input class="filterFields" type="date" id="DateEnd" />
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-sm btn-outline-secondary" id="clearFilter">Limpar</a>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="actions-container">
+    @await Html.PartialAsync("_PlannedActionsPartialView.cshtml")
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            RestorePlannedFilterFromStorage();
+            PlannedActionsFilter();
+
+        });
+        //$(document).on('submit', '.myForm', function (e) {
+
+        //    $.ajax({
+        //        url: $(this).attr('action'),
+        //        type: $(this).attr('method'),
+        //        data: $(this).serialize(),
+        //        success: function (html) {
+        //            window.location.reload(true);
+        //            PlannedActionsFilter();
+        //        },
+        //        error: function (response) {
+        //            console.log('erro: ', response);
+        //        }
+        //    });
+        //    e.preventDefault();
+        //});
+        $(document).on('click', '.EditAction', function () {
+            var opportunityAction = $(this).attr("data-opportunityAction");
+            var url = '@ViewBag.Url' + '/OpportunityActions/Edit/' + opportunityAction;
+            OpenModal(url, '#modal');
+        });
+        $(document).on('click', '.DelayAction', function (e) {
+            var actionId = $(this).attr("data-opportunityAction");
+            var days = $(this).attr("data-days");
+            var url = '@ViewBag.Url' + '/OpportunityActions/Delay?actionId=' + actionId + '&days=' + days;
+            OpenModal(url, '#modal');
+        });
+        $(document).on('change', '.filterFields', function () {
+            var erpUserId = $("#ErpUserSelect").val();
+            var actionStatus = $('#actionStatus').val();
+            var DateStart = $('#DateStart').val();
+            var DateEnd = $('#DateEnd').val();
+            var searchString = $('#searchString').val();
+            var currentFilter = $('#searchString').val();
+            SavePlannedFilterParams(erpUserId, actionStatus, null, DateStart, DateEnd, searchString, currentFilter);
+            PlannedActionsFilter();
+        });
+        var debounceTimer;
+        $(document).on('input', '#searchString', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+                var erpUserId = $("#ErpUserSelect").val();
+                var actionStatus = $('#actionStatus').val();
+                var DateStart = $('#DateStart').val();
+                var DateEnd = $('#DateEnd').val();
+                var searchString = $('#searchString').val();
+                var currentFilter = $('#searchString').val();
+                SavePlannedFilterParams(erpUserId, actionStatus, null, DateStart, DateEnd, searchString, currentFilter);
+                PlannedActionsFilter();
+            }, 300);
+        });
+        $(document).on('click', '#clearFilter', function () {
+            $('#DateStart').val("");
+            $('#DateEnd').val("");
+            $("#ErpUserSelect").val(0);
+            $('#actionStatus').val("Todas")
+            $('#searchString').val("")
+
+            var erpUserId = $("#ErpUserSelect").val();
+            var actionStatus = $('#actionStatus').val();
+            var DateStart = $('#DateStart').val();
+            var DateEnd = $('#DateEnd').val();
+            var searchString = $('#searchString').val();
+            var currentFilter = $('#searchString').val();
+
+            SavePlannedFilterParams(erpUserId, actionStatus, null, DateStart, DateEnd, searchString, currentFilter);
+            PlannedActionsFilter();
+        })
+    </script>
+}
+

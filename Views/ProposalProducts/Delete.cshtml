@@ -1,0 +1,109 @@
+﻿@model RLBW_ERP.Models.SalesModels.ProposalProduct
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" class="myForm" method="post">
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <h5 class="text-danger">Excluir produto <strong>@Model.Category.CategoryName @Model.Product.Name</strong> da proposta @Model.ProposalId?</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Category)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Category.CategoryName)
+                        </dd class>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Product)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Product.Name)
+                        </dd class>
+@*                        @if (Model.CategoryId==1)
+                        {
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.LicenseNetworkId)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.LicenseNetworkId)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Seats)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Seats)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.LicenseTimeId)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.LicenseTimeId)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.TimeQuantity)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.TimeQuantity)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.CommercialLicenseId)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.CommercialLicenseId)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Cores)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Cores)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Tasks)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Tasks)
+                            </dd class>
+                            <dt class = "col-sm-2">
+                                @Html.DisplayNameFor(model => model.Workbenchs)
+                            </dt>
+                            <dd class = "col-sm-10">
+                                @Html.DisplayFor(model => model.Workbenchs)
+                            </dd class>
+                        }*@
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.BasePrice)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.BasePrice)
+                        </dd class>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Discount)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Discount)%
+                        </dd class>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Price)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Price)
+                        </dd class>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <a class="btn btn-sm btn-outline-secondary ProposalDetails" data-bs-target="#modal" data-proposalId=@Model.ProposalId>Voltar</a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

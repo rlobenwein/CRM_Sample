@@ -1,0 +1,12 @@
+﻿@using RLBW_ERP.Models.FinanceModels;
+@model IEnumerable<RLBW_ERP.Models.ViewModels.MonthBalanceTransactionsViewModel>
+@{
+    var currentFilter = ViewBag.CurrentFilter;
+    int year = ViewBag.Year;
+    int month = ViewBag.Month;
+    var currentSort = ViewData["CurrentSort"];
+}
+<div>
+    <p>Nenhum dado disponível com os filtros selecionados</p>
+</div>
+

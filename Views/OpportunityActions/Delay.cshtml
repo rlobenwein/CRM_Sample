@@ -1,0 +1,45 @@
+﻿@using static RLBW_ERP.Models.SalesModels.OpportunityAction
+@model RLBW_ERP.Models.ViewModels.DelayActionViewModel
+
+<div class="container">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form asp-action="Delay" class="myForm" method="post">
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ActionId"/>
+                    <input type="hidden" asp-for="Days"/>
+                    <h5>Adiar a ação</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <div class="row input-group mb-3">
+                        <div class="col input-group mb-3">
+                           <div class="input-group mb-3">
+                                <span class="input-group-text">Data atual</span>
+                                <input class="form-control" type="date" asp-for="OldDate" value="@Model.OldDate.ToString("yyyy-MM-dd")" readonly/>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> Nova Data </span>
+                                <input class="form-control" type="date" asp-for="NewDate" value="@Model.NewDate.ToString("yyyy-MM-dd")" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col">
+                        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

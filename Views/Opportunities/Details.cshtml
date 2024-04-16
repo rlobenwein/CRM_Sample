@@ -1,0 +1,685 @@
+﻿@using System.Globalization;
+@model RLBW_ERP.Models.ViewModels.OpportunityDetailsViewModel
+
+@{
+    ViewData["Title"] = "Op. " + Model.Id + " (" + Model.Company + ")";
+    string actionStatus;
+}
+
+<div class="row container-fluid h-100">
+    <div class="col-3">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>
+                    Oportunidade @Html.DisplayFor(model => model.Id)
+                    @if (Model.Title != null)
+                    {
+                        @Html.Raw("(")
+
+                        @Html.DisplayFor(model => model.Title)
+
+                        @Html.Raw(")")
+                        ;
+
+                    }
+                </h5>
+            </div>
+            <div class="card-body pre-scrollable h-100">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Date):</strong> @Html.DisplayFor(model => model.Date)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Company):</strong> @Html.DisplayFor(model => model.Company)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Product):</strong>
+                        @if (Model.Product != null)
+                        {
+                            @Html.DisplayFor(modelItem => Model.Category)
+                            @Html.Raw(" ")
+                            @Html.DisplayFor(modelItem => Model.Product)
+                        }
+                        else
+                        {
+                            @Html.Raw("Não informado")
+                        }
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Value): </strong>@Html.DisplayFor(model => model.Value)
+                        @if (Model.CostCenterId != null)
+                        {
+                            <a class="btn btn-sm btn-outline-success" asp-controller="CostCenters" asp-action="Details" asp-route-id="@Model.CostCenterId">Ver Centro de Custo</a>
+                        }
+                        else
+                        {
+                            <form asp-action="Create" asp-controller="CostCenters" method="post" id="formCreate" asp-route-id="@Model.CostCenterId">
+                                <input type="hidden" asp-for="Id" />
+                                <input class="btn btn-sm btn-outline-secondary" type="submit" value="Criar Centro de Custo"/>
+                            </form>
+                        }
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Manager):</strong> @Html.DisplayFor(model => model.Manager)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Pipeline):</strong> @Html.DisplayFor(model => model.Pipeline)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Status):</strong> @Html.DisplayFor(model => model.Status)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Notes):</strong> @Html.DisplayFor(model => model.Notes)
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group dropright">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="/img/menu.svg" width="16" height="16">
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="list-group">
+                            <a data-Id="@Model.Id" class="dropdown-item EditOpportunity">Editar oportunidade @Model.Id</a>
+                            @if (Model.Status != RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Canceled.ToString())
+                            {
+                                <a data-Id="@Model.Id" class="dropdown-item CancelOpportunity">Cancelar oportunidade @Model.Id</a>
+                            }
+
+                            <div class="dropdown-divider"></div>
+                            <a asp-action="Details" asp-controller="Companies" asp-route-id="@Model.CompanyId" class="dropdown-item">@Html.DisplayFor(model => model.Company)</a>
+                            @if (User.IsInRole("Director") || User.IsInRole("SuperAdmin"))
+                            {
+                                <a data-Id="@Model.Id" class="dropdown-item DeleteOpportunity">Excluir oportunidade @Model.Id</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>
+                    Propostas
+                    @if (Model.Proposals.Count != 0)
+                    {
+                        @Html.Raw("(")
+                        ;
+                        @Model.Proposals.Count
+                        ;
+                        @Html.Raw(")")
+                        ;
+                    }
+                </h5>
+            </div>
+            <div class="card-body pre-scrollable h-100" id="contact-card">
+                <ul class="list-group list-group-flush">
+                    @if (Model.Proposals.Count != 0)
+                    {
+                        foreach (var item in Model.Proposals.OrderByDescending(x => x.Date).ThenByDescending(x => x.Id))
+                        {
+                            <li class="list-group-item">
+                                <strong>
+                                    <a href="#" class="stretched-link ProposalDetails" data-proposalId=@item.Id>Proposta @Html.DisplayFor(x => item.Id)-@Html.DisplayFor(x => item.Id)</a>
+                                </strong>
+                                de @Html.DisplayFor(x => item.Date) (@Html.DisplayFor(x => item.Status)) - @Html.DisplayFor(x => item.Price) @Html.DisplayFor(x => item.Currency)
+                                @*(Produtos: @item.Products.Count)*@
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a data-Id="@Model.Id" class="btn btn-sm btn-outline-secondary CreateProposal">Nova Proposta</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>
+                    Pedidos
+                </h5>
+            </div>
+            <div class="card-body pre-scrollable h-100" id="contact-card">
+                <ul class="list-group list-group-flush">
+                    @foreach (var po in Model.PurchaseOrders)
+                    {
+                        <li class="list-group-item">
+                            <strong>
+                                <a asp-action="Details" asp-controller="PurchaseOrders" asp-route-id="@po.Id">@Html.DisplayFor(x => po.Id) (@Html.DisplayFor(x => po.Status))</a>
+                            </strong>
+                        </li>
+
+                    }
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>Oportunidades relacionadas</h5>
+            </div>
+            <div class="card-body pre-scrollable h-100" id="contact-card">
+                <ul class="list-group list-group-flush">
+
+                    @if (Model.OpportunitiesRelated != null)
+                    {
+                        for (int i = 0; i < Model.OpportunitiesRelated.Count; i++)
+                        {
+                            if (Model.OpportunitiesRelated[i].Id != Model.Id)
+                            {
+                                <li class="list-group-item">
+                                    <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@Model.OpportunitiesRelated[i].Id"><strong>@Html.DisplayFor(x => x.OpportunitiesRelated[i].Id):</strong></a>
+                                    @if (Model.OpportunitiesRelated[i].Title != null)
+                                    {
+                                        @Html.DisplayFor(x => x.OpportunitiesRelated[i].Title)
+
+                                    }
+                                    else if (Model.OpportunitiesRelated[i].Product != null)
+                                    {
+                                        @Html.DisplayFor(x => x.OpportunitiesRelated[i].Category)
+                                        @Html.Raw(" ")
+                                        @Html.DisplayFor(x => x.OpportunitiesRelated[i].Product)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("Produto/Título não informados")
+                                    }
+                                </li>
+                            }
+                        }
+                    }
+
+                </ul>
+            </div>
+            <div class="card-footer">
+                <button id="modalButton" data-Id="@Model.Id" data-CompanyId="@Model.CompanyId" class="btn btn-sm btn-outline-secondary CreateGroup">Associar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="card container-fluid">
+        <div class="card-header">
+            <div class="row">
+
+                <h5>
+                    @Html.DisplayNameFor(model => model.Actions)
+                </h5>
+                <div class="btn-group dropright">
+                    <button class="btn btn-outline-suc btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="/img/menu.svg" width="16" height="16">
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="list-group">
+                            <a data-opportunityId="@Model.Id" class="dropdown-item NewAction">Nova Ação</a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <button class="dropdown-item CreatePerson" data-Customer="@Model.CompanyId">Novo Contato vinculado ao cliente @Model.Company</button>
+                            <a asp-controller="CompanyEmployees" asp-route-CompanyId="@Model.CompanyId" asp-action="Create" class="dropdown-item">Vincular um contato existente ao cliente  @Model.Company</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Contato</th>
+                        <th>Responsável</th>
+                        <th style="max-width: 800px">Descrição</th>
+                        <th>Pipeline</th>
+                        <th>Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Actions)
+                    {
+                        switch (item.Status)
+                        {
+                            case "Planejada":
+                                if (item.Date.CompareTo(DateTime.UtcNow.Date) < 0)
+                                {
+                                    actionStatus = "ActionStatusDelayed";
+                                }
+                                else
+                                {
+                                    actionStatus = "ActionStatusPlanned";
+                                }
+                                break;
+                            case "Cancelada":
+                                actionStatus = "ActionStatusCanceled";
+                                break;
+                            default:
+                                actionStatus = "font-weight-normal";
+                                break;
+                        }
+                        <tr class=@actionStatus>
+
+                            <td>
+                                @item.Date.ToString("dd/MM/yyyy hh:mm")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ActionType)
+                            </td>
+                            @if (item.Contact != null)
+                            {
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Contact)
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    -
+                                </td>
+                            }
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Manager)
+                            </td>
+                            <td>
+                                @Html.Raw(item.Description.Replace(Environment.NewLine, "<br/>"))
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Pipeline)
+                            </td>
+                            <td>
+                                @if (actionStatus == "ActionStatusDelayed")
+                                {
+                                    @Html.Raw("Atrasada")
+                                    ;
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                    ;
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group dropleft">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="/img/menu.svg" width="16" height="16">
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a data-opportunityId="@Model.Id" data-actionId="@item.Id" class="dropdown-item DuplicateAction">Copiar p/ outra Oport.</a>
+                                        <a data-Id="@item.Id" class="dropdown-item CopyAction">Duplicar nesta Oport.</a>
+                                        <a data-Id="@item.Id" class="dropdown-item WaitForReply">"Aguardar Retorno"</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a data-opportunityAction="@item.Id" class="dropdown-item EditAction">Editar</a>
+                                        @if (item.Status == "Planejada")
+                                        {
+                                            <div class="dropdown-divider"></div>
+                                            <a data-opportunityAction="@item.Id" data-days="1" class="dropdown-item DelayAction">Adiar - amanhã</a>
+                                            <a data-opportunityAction="@item.Id" data-days="7" class="dropdown-item DelayAction">Adiar 1 semana</a>
+                                            <a data-opportunityAction="@item.Id" data-days="30" class="dropdown-item DelayAction">Adiar 1 mês</a>
+
+                                        }
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <a data-opportunityId="@Model.Id" class="btn btn-sm btn-outline-secondary NewAction">Nova Ação</a>
+        </div>
+    </div>
+</div>
+<div id="modal" class="modal fade" role="dialog" />
+<div id="modal2" class="modal fade" role="dialog" />
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        document.addEventListener('keydown', function (event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                console.log('Ctrl+Enter pressed')
+                var activeModal = document.querySelector('#modal.show');
+                console.log('activeModal:', activeModal);
+                if (activeModal) {
+                    var form = activeModal.querySelector('.myForm');
+                    console.log('form: ', form)
+                    if (form) {
+                        form.submit();
+                    }
+                }
+            }
+        });
+        $(document).ready(function () {
+            $("form").removeData("validator");
+            $("form").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse($('form'));
+        })
+        $(document).on('submit', '.myForm', function (e) {
+            var subProduct = $('#SubProduct').val();
+            if (subProduct != null && subProduct > 0) {
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function (html) {
+                        window.location.reload(true);
+                    },
+                    error: function (response) {
+                        console.log('erro: ', response);
+                    }
+                });
+                e.preventDefault();
+            };
+        });
+        $(document).on('click', '.EditOpportunity', function () {
+            var Id = $(this).attr("data-Id");
+            var url = '@ViewBag.Url' + '/Opportunities/Edit/' + Id;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '#CostCenterCreate', function () {
+            var Id = $(this).attr("data-Id");
+            var url = '@ViewBag.Url' + '/CostCenters/Create/' + Id;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '.DeleteOpportunity', function () {
+            var opportunityId = $(this).attr("data-Id");
+            var url = '@ViewBag.Url' + '/Opportunities/Delete/' + opportunityId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '.CancelOpportunity', function () {
+            var opportunityId = $(this).attr("data-Id");
+            var url = '@ViewBag.Url' + '/Opportunities/CancelOpportunity/' + opportunityId;
+            console.log(url);
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '.EditAction', function () {
+            var opportunityActionId = $(this).attr("data-opportunityAction");
+            var url = '@ViewBag.Url' + '/OpportunityActions/Edit/' + opportunityActionId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '.NewAction', function () {
+            var opportunityId = $(this).attr("data-opportunityId");
+            var url = '@ViewBag.Url' + '/OpportunityActions/Create?opportunityId=' + opportunityId;
+            OpenModal(url, "#modal");
+        });
+
+        $(document).on('click', ".CreateGroup", function () {
+            var opportunityId = $(this).attr("data-Id");
+            var companyId = $(this).attr("data-companyId");
+            var url = '@ViewBag.Url/Opportunities/CreateGroup?opportunityId=' + opportunityId + '&companyId=' + companyId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".DuplicateAction", function () {
+            var opportunityId = $(this).attr("data-opportunityId");
+            var actionId = $(this).attr("data-actionId");
+            var url = '@ViewBag.Url/OpportunityActions/Duplicate?opportunityId=' + opportunityId + '&actionId=' + actionId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".CopyAction", function () {
+            var actionId = $(this).attr("data-Id");
+            var url = '@ViewBag.Url/OpportunityActions/Copy/' + actionId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".WaitForReply", function () {
+            var actionId = $(this).attr("data-Id");
+            var url = '@ViewBag.Url/OpportunityActions/WaitForReply/' + actionId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".CreateProposal", function () {
+            var opportunityIdId = $(this).attr("data-Id");
+            var url = '@ViewBag.Url' + '/Proposals/Create?opportunityId=' + opportunityIdId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".ProposalDetails", function () {
+            var proposalId = $(this).attr("data-proposalId");
+            var url = '@ViewBag.Url' + '/Proposals/Details/' + proposalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".ReviewProposal", function () {
+            var Id = $(this).attr("data-Id");
+            var proposalId = $(this).attr("data-proposalId");
+            var url = '@ViewBag.Url' + '/Proposals/Create?Id=' + Id +
+                '&proposalId=' + proposalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".EditProposal", function () {
+            var proposalId = $(this).attr("data-proposalId");
+            var url = '@ViewBag.Url' + '/Proposals/Edit/' + proposalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".DeleteProposal", function () {
+            var proposalId = $(this).attr("data-proposalId");
+            var url = '@ViewBag.Url' + '/Proposals/Delete/' + proposalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".ProposalProductCreate", function () {
+            var proposalId = $(this).attr("data-proposalId");
+            var url = '@ViewBag.Url' + '/ProposalProducts/Create?proposalId=' + proposalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".ProposalProductEdit", function () {
+            var proposalProduct = $(this).attr("data-proposalProduct");
+            var url = '@ViewBag.Url' + '/ProposalProducts/Edit/' + proposalProduct;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".ProposalProductDetails", function () {
+            var proposalProduct = $(this).attr("data-proposalProduct");
+            var url = '@ViewBag.Url' + '/ProposalProducts/Details/' + proposalProduct;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".ProposalProductDelete", function () {
+            var proposalProduct = $(this).attr("data-proposalProduct");
+            var url = '@ViewBag.Url' + '/ProposalProducts/Delete/' + proposalProduct;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".SubproductListItemCreate", function () {
+            var Product = $(this).attr("data-Product");
+            var proposalProduct = $(this).attr("data-proposalProduct");
+            var url = '@ViewBag.Url' + '/SubproductsLists/Create?Product=' + Product + '&proposalProduct=' + proposalProduct;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('change', '#SubProduct', function () {
+            var url = '@ViewBag.Url' + '/SubproductsLists/';
+            GetSubproductPrice(url);
+        })
+        $(document).on('click', ".SubproductListItemEdit", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/SubproductsLists/Edit/' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".SubproductListItemDetails", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/SubproductsLists/Details/' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".SubproductListItemDelete", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/SubproductsLists/Delete/' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".SoftwareParamsCreate", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/SoftwareParams/Create/' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".SoftwareParamsEdit", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/SoftwareParams/Edit?subproductsListId=' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".SoftwareParamsDelete", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/SoftwareParams/Delete/' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".OptionalsCreate", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var url = '@ViewBag.Url' + '/OptionalsPackages/Create/' + subproductListId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".OptionalsEdit", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var optionalId = $(this).attr("data-OptionalId");
+            var url = '@ViewBag.Url' + '/OptionalsPackages/Edit?subproductsListId=' + subproductListId + '&optionalId=' + optionalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".OptionalsDelete", function () {
+            var subproductListId = $(this).attr("data-SubproductListId");
+            var optionalId = $(this).attr("data-OptionalId");
+            var url = '@ViewBag.Url' + '/OptionalsPackages/Delete?subproductsListId=' + subproductListId + '&optionalId=' + optionalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".CreatePO", function () {
+            var proposalId = $(this).attr("data-proposalId");
+            var url = '@ViewBag.Url' + '/PurchaseOrders/Create?proposalId=' + proposalId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', ".CreatePerson", function () {
+            var companyId = $(this).attr("data-Customer");
+            var url = '@ViewBag.Url' + '/People/CreateInCompany?companyId=' + companyId;
+            console.log(url);
+            OpenModal(url, "#modal");
+        });
+        $(document).on('change', '#ManualPrice', function () {
+            var manualPrice = $('#ManualPrice').is(":checked");
+            $('#BasePrice').prop("readonly", !manualPrice);
+        });
+        $(document).on('input', '#Discount', function () {
+            var discount = $('#Discount').val();
+            discount = discount.toString().replace(',', '.') / 100;
+            var basePrice = $('#BasePrice').val();
+            basePrice = basePrice.toString().replace(',', '.');
+            var finalPrice = $('#FinalPrice').val();
+            if (finalPrice != undefined) {
+                var decimalPlaces = 2;
+                finalPrice = finalPrice.toString().replace(',', '.');
+                finalPrice = basePrice * (1 - discount);
+                finalPrice = Math.ceil(finalPrice * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+                $('#FinalPrice').val(finalPrice);
+            }
+        });
+        $(document).on('focusout', '#BasePrice', function () {
+            var discount = $('#Discount').val();
+            discount = discount.toString().replace(',', '.') / 100;
+            var basePrice = $('#BasePrice').val();
+            basePrice = basePrice.toString().replace(',', '.');
+            var finalPrice = $('#FinalPrice').val();
+            if (finalPrice != undefined) {
+                finalPrice = finalPrice.toString().replace(',', '.');
+                finalPrice = basePrice * (1 - discount);
+                $('#FinalPrice').val(finalPrice);
+            };
+        });
+        $(document).on('change', '#CategoryId', function () {
+            var url = '@ViewBag.Url/' + 'ProposalProducts/';
+            GetProductList($('#CategoryId'), url);
+        });
+        $(document).on('change', '#Product', function () {
+            var url = '@ViewBag.Url/' + 'ProposalProducts/';
+            GetNetworkTypeList(url);
+            GetCommercialLicenseList(url);
+            GetLicenseTimeList(url);
+            EnableFieldsByProduct();
+        });
+
+        $(document).on('change', '#LicenseNetworkTypeId', function () {
+            if ($('#LicenseNetworkTypeId').val() == 4) {
+                $('#LicenseTimeId').val(5);
+            } else if ($('#LicenseTimeId').val() == 5) {
+                $('#LicenseTimeId').val(0);
+            }
+        });
+
+        $(document).on('change', '#LicenseTimeId', function () {
+            if ($('#LicenseTimeId').val() == 5) {
+                $('#LicenseNetworkTypeId').val(4);
+            } else if ($('#LicenseNetworkTypeId').val() == 4) {
+                $('#LicenseNetworkTypeId').val(0);
+            }
+        });
+        $(document).on('change', '#PODate', function () {
+            var finalLabel = $('#excRateLabel').text();
+            var loadingLabel = finalLabel + ' (atualizando...)';
+            $('#excRateLabel').text(loadingLabel);
+            var date = $('#PODate').val();
+            var url = '@ViewBag.Url/Home/GetExchangeRateValues?strDate="' + date + '"';
+            var deferred = $.Deferred();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data) {
+                    var currency = $("#currency").val()
+                    var dollarValue = data.dollarValue === 0 ? "Erro" : data.dollarValue;
+                    var euroValue = data.euroValue === 0 ? "Erro" : data.euroValue;
+                    var exchangeDate = new Date(data.exchangeDate);
+                    var exchangeRate = 1;
+                    if (isNaN(exchangeDate.getTime())) {
+                        exchangeDate = null;
+                    }
+
+                    switch (currency) {
+                        case "1":
+                            exchangeRate = parseFloat(dollarValue);
+                            break;
+                        case "2": exchangeRate = parseFloat(euroValue);
+                            break;
+                        default:
+                            exchangeRate = 1;
+                    }
+                    var value = $('#value').val().toString().replace(',', '.');
+                    var price = value * exchangeRate;
+                    $('#valueBrl').val(price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                    $('#exchangeRate').val(exchangeRate.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 8 }));
+                    $('#excRateLabel').text(finalLabel);
+
+                },
+                error: function (e) {
+                    console.log(e);
+                    $('#dollarValue').text('Erro');
+                    $('#euroValue').text('Erro');
+                    $('#bulletin').text('Erro');
+                }
+            });
+        });
+        $(document).on('click', '.DelayAction', function (e) {
+            var actionId = $(this).attr("data-opportunityAction");
+            var days = $(this).attr("data-days");
+            var url = '@ViewBag.Url' + '/OpportunityActions/Delay?actionId=' + actionId + '&days=' + days;
+            OpenModal(url, '#modal');
+        });
+
+        $(document).on('shown.bs.modal', '#modal', function () {
+
+            $('#OpportunityProductsId').on('change', function () {
+                var opportunityProduct = $('#OpportunityProductsId').val();
+                var url = '@ViewBag.Url/Proposals/GetOpportunityProductPrice?opportunityProduct=' + opportunityProduct;
+                $.getJSON(url, { opportunityProduct: opportunityProduct }, function (data) {
+                    $('#BasePrice').val(data);
+                    var finalPrice = UpdateFinalPrice($('#BasePrice').val(), $('#Discount').val());
+                    $('#FinalPrice').val(finalPrice);
+                });
+                if (opportunityProduct != 0) {
+                    url = '@ViewBag.Url/OpportunityProducts/GetOpportunityProductItems?opportunityProduct=' + opportunityProduct;
+                    $.getJSON(url, { opportunityProduct: opportunityProduct }, function (data) {
+                        $('#OpportunityProductsNames').text(data);
+                    });
+                }
+            });
+        })
+
+    </script>
+}

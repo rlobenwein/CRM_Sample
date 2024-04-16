@@ -1,0 +1,118 @@
+﻿@using RLBW_ERP.Models.FinanceModels;
+@model IEnumerable<RLBW_ERP.Models.ViewModels.MonthBalanceTransactionsViewModel>
+@{
+    var currentFilter = ViewBag.CurrentFilter;
+    int year = Model.First().Date.Year;
+    int month = Model.First().Date.Month;
+
+    var currentSort = ViewData["CurrentSort"];
+    string isExpense = (string)ViewData["isExpense"];
+    string isIncurred = (string)ViewData["isIncurred"];
+    var category = ViewData["Id"];
+    var subcategory = ViewData["SubcategoryId"];
+    var type = ViewData["TypeId"];
+    var paymentAccount = ViewData["PaymentAccountId"];
+    var dateStart = ViewData["DateStart"];
+    var dateEnd = ViewData["DateEnd"];
+
+}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                <a href="#transactions-table" class="sortField" id="DateSortParm" data-sort="@ViewData["DateSortParm"]" >Data</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="IsExpenseSortParm" data-sort="@ViewData["IsExpenseSortParm"]" >Natureza</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="CategoryNameSortParm" data-sort="@ViewData["CategoryNameSortParm"]" >Categoria</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="SubcategoryNameSortParm" data-sort="@ViewData["SubcategoryNameSortParm"]" >Subcategoria</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="TypeNameSortParm" data-sort="@ViewData["TypeNameSortParm"]" >Tipo</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="DescriptionSortParm" data-sort="@ViewData["DescriptionSortParm"]" >Descrição</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="ValueSortParm" data-sort="@ViewData["ValueSortParm"]" >Valor</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="PaymentAccountIdSortParm" data-sort="@ViewData["PaymentAccountIdSortParm"]" >Conta</a>
+            </th>
+            <th>
+                <a href="#transactions-table" class="sortField" id="IsIncurredSortParm" data-sort="@ViewData["IsIncurredSortParm"]" >Previsto/Realizado</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @if (item.IsExpense)
+                    {
+                        @Html.Raw("Despesa")
+                    }
+                    else
+                    {
+                        @Html.Raw("Receita")
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubcategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td class="custom-value">
+                    @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.Value)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentAccountName)
+                </td>
+                <td>
+                    @if (item.IsIncurred)
+                    {
+                        @Html.Raw("Realizada")
+                    }
+                    else
+                    {
+                        @Html.Raw("Prevista")
+                    }
+                </td>
+                <td>
+                    <div class="btn-group dropleft">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="/img/menu.svg" width="16" height="16">
+                        </button>
+                        <div class="dropdown-menu">
+                            <div class="list-group">
+                                <a class="dropdown-item" asp-controller="Transactions" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                                <a class="dropdown-item" asp-controller="Transactions" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                                <a class="dropdown-item" asp-controller="Transactions" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar para a lista</a>
+</div>
+

@@ -1,0 +1,151 @@
+﻿@model PaginetedList<RLBW_ERP.Models.FinanceModels.PurchaseOrder>
+
+@{
+    ViewData["Title"] = "Pedidos";
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var currentPageSize = ViewData["CurrentPageSize"];
+    var status = ViewData["Status"];
+    var currentFilter = ViewData["CurrentFilter"];
+    var currentSort = ViewData["CurrentSort"];
+}
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color ">
+        <div class="row justify-content-end">
+            <div class="col">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        Pesquisa: <input type="text" name="SearchString" value="@currentFilter" />
+                        <input type="submit" asp-route-status="@status" value="Pesquisar" class="btn btn-sm btn-outline-secondary" />
+                        <a asp-action="Index" value="Limpar" class="btn btn-sm btn-outline-secondary">Limpar Filtro</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+
+                        Items por página:
+                        <select asp-for="PageSize">
+                            @switch (currentPageSize)
+                            {
+                                case "50":
+                                    <option>10</option>
+                                    <option>25</option>
+                                    <option selected>50</option>
+                                    <option>100</option>
+                                    break;
+                                case "25":
+                                    <option>10</option>
+                                    <option selected>25</option>
+                                    <option>50</option>
+                                    <option>100</option>
+                                    break;
+                                default:
+                                    <option selected>10</option>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>100</option>
+                                    break;
+                            }
+                        </select>
+                        <input type="hidden" asp-for="Status" value="@status" />
+                        <input type="submit" asp-route-status="@status" value="Aplicar" class="btn btn-sm btn-outline-secondary" />
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@currentSort"
+                           asp-route-pageNumber="@(Model.PageIndex - 1)"
+                           asp-route-currentFilter="@currentFilter"
+                           asp-route-pageSize="@currentPageSize"
+                           asp-route-status="@status"
+                           class="btn btn-outline-secondary btn-sm @prevDisabled">
+                            Anterior
+                        </a>
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@currentSort"
+                           asp-route-pageNumber="@(Model.PageIndex + 1)"
+                           asp-route-currentFilter="@currentFilter"
+                           asp-route-pageSize="@currentPageSize"
+                           asp-route-status="@status"
+                           class="btn btn-outline-secondary btn-sm @nextDisabled">
+                            Próxima
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PONumberSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Pedido</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CompanyNameSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Cliente</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Data</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["OpportunityIdSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Oportunidade</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ProposalSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Proposta</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ContractSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Contrato</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ValueSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Valor</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrencySortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Moeda</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]" asp-route-currentFilter="@currentFilter" asp-route-pageSize="@currentPageSize" asp-route-status="@status">Situação</a>
+            </th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="PurchaseOrders" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.PONumber)</a>
+                </td>
+                <td>
+                    <a asp-controller="Companies" asp-action="Details" asp-route-id="@item.Opportunity.CompanyId">@Html.DisplayFor(modelItem => item.Opportunity.Company.FriendlyName)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@item.OpportunityId">@Html.DisplayFor(modelItem => item.OpportunityId) (@Html.DisplayFor(modelItem=>item.Opportunity.Title))</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProposalId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contract)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Currency)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.POStatus)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

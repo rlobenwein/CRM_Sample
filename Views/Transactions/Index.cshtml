@@ -1,0 +1,311 @@
+﻿@model PaginetedList<RLBW_ERP.Models.ViewModels.TransactionsViewModel>
+
+@{
+    ViewData["Title"] = "Diário";
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var currentPageSize = ViewData["CurrentPageSize"];
+    var currentFilter = ViewData["CurrentFilter"];
+    var currentSort = ViewData["CurrentSort"];
+    string isExpense = (string)ViewData["isExpense"];
+    string isIncurred = (string)ViewData["isIncurred"];
+    var category = ViewData["category"];
+    var subcategory = ViewData["subcategory"];
+    var type = ViewData["type"];
+    var paymentAccount = ViewData["paymentAccount"];
+    var dateStart = ViewData["dateStart"];
+    var dateEnd = ViewData["dateEnd"];
+
+}
+
+<h3>Diário <a class="btn btn-sm btn-outline-secondary" asp-action="Create">Nova transação</a></h3>
+<div class="row justify-content-start">
+    <div class="col-4">
+        <div class="row justify-content-start">
+            <form method="post" enctype="multipart/form-data" asp-action="LoadOfx">
+                <div class="input-group mb-3">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Carregar</button>
+                    <input type="file" name="ofxFile" id="loadOfxFile" class="form-control">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col">
+        <form asp-action="Index" method="get">
+            <div class="form-actions no-color ">
+                <div class="row justify-content-end">
+                    <div class="col">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="A pesquisa ocorre somente para Descrição, Documento e Observações">
+                                    Pesquisa: <input type="text" class="filterFields" name="SearchString" value="@currentFilter" id="searchString" />
+                                </a>
+                                <input type="submit"
+                                       asp-route-sortOrder="@currentSort"
+                                       asp-route-currentFilter="@currentFilter"
+                                       asp-route-isExpense="@isExpense"
+                                       asp-route-isIncurred="@isIncurred "
+                                       asp-route-category="@category"
+                                       asp-route-subcategory="@subcategory"
+                                       asp-route-type="@type"
+                                       asp-route-paymentAccount="@paymentAccount"
+                                       asp-route-dateStart="@dateStart"
+                                       asp-route-dateEnd="@dateEnd"
+                                       value="Pesquisar" class="btn btn-sm btn-outline-secondary" />
+                                <a asp-action="Index" value="Limpar" class="btn btn-sm btn-outline-secondary" id="clearFilter">Limpar Filtro</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                Items por página:
+                                <select asp-for="PageSize">
+                                    @switch (currentPageSize)
+                                    {
+                                        case "100":
+                                            <option>10</option>
+                                            <option>25</option>
+                                            <option>50</option>
+                                            <option selected>100</option>
+                                            break;
+                                        case "50":
+                                            <option>10</option>
+                                            <option>25</option>
+                                            <option selected>50</option>
+                                            <option>100</option>
+                                            break;
+                                        case "25":
+                                            <option>10</option>
+                                            <option selected>25</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                            break;
+                                        default:
+                                            <option selected>10</option>
+                                            <option>25</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                            break;
+                                    }
+                                </select>
+                                <input type="submit"
+                                       asp-route-sortOrder="@currentSort"
+                                       asp-route-pageNumber="@Model.PageIndex"
+                                       asp-route-currentFilter="@currentFilter"
+                                       asp-route-pageSize="@currentPageSize"
+                                       asp-route-isExpense="@isExpense"
+                                       asp-route-isIncurred="@isIncurred"
+                                       asp-route-category="@category"
+                                       asp-route-subcategory="@subcategory"
+                                       asp-route-type="@type"
+                                       asp-route-paymentAccount="@paymentAccount"
+                                       asp-route-dateStart="@dateStart"
+                                       asp-route-dateEnd="@dateEnd"
+                                       value="Aplicar" class="btn btn-sm btn-outline-secondary" />
+                                <a asp-action="Index"
+                                   asp-route-sortOrder="@currentSort"
+                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                   asp-route-currentFilter="@currentFilter"
+                                   asp-route-pageSize="@currentPageSize"
+                                   asp-route-isExpense="@isExpense"
+                                   asp-route-isIncurred="@isIncurred "
+                                   asp-route-category="@category"
+                                   asp-route-subcategory="@subcategory"
+                                   asp-route-type="@type"
+                                   asp-route-paymentAccount="@paymentAccount"
+                                   asp-route-dateStart="@dateStart"
+                                   asp-route-dateEnd="@dateEnd"
+                                   class="btn btn-outline-secondary btn-sm @prevDisabled">
+                                    Anterior
+                                </a>
+                                <a asp-action="Index"
+                                   asp-route-sortOrder="@currentSort"
+                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                   asp-route-currentFilter="@currentFilter"
+                                   asp-route-pageSize="@currentPageSize"
+                                   asp-route-isExpense="@isExpense"
+                                   asp-route-isIncurred="@isIncurred "
+                                   asp-route-category="@category"
+                                   asp-route-subcategory="@subcategory"
+                                   asp-route-type="@type"
+                                   asp-route-paymentAccount="@paymentAccount"
+                                   asp-route-dateStart="@dateStart"
+                                   asp-route-dateEnd="@dateEnd"
+                                   class="btn btn-outline-secondary btn-sm @nextDisabled">
+                                    Próxima
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-1">
+                    <span class="input-group-text">Natureza</span>
+                    <select class="form-control filterFields" id="isExpense">
+                        <option selected value=0>Todos</option>
+                        <option value="true">Despesas</option>
+                        <option value="false">Receitas</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <span class="input-group-text">Previsto/Realizado</span>
+                    <select class="form-control filterFields" id="isIncurred">
+                        <option selected value=0>Todos</option>
+                        <option value="true">Realizado</option>
+                        <option value="false">Previsto</option>
+                    </select>
+                </div>
+                <div class="col-1">
+                    <span class="input-group-text">Categoria</span>
+                    <select class="form-control filterFields" id="category" asp-items="@(new SelectList(ViewBag.TransactionCategory, "Value", "Text", category))">
+                        <option selected value=0>Todas</option>
+                    </select>
+                </div>
+                <div class="col-1">
+                    <span class="input-group-text">Subcategoria</span>
+                    <select class="form-control filterFields" id="subcategory" asp-items="@(new SelectList(ViewBag.TransactionSubcategory, "Value", "Text", subcategory))">
+                        <option selected value=0>Todas</option>
+                    </select>
+                </div>
+                <div class="col-1">
+                    <span class="input-group-text">Tipo</span>
+                    <select class="form-control filterFields" id="type" asp-items="@(new SelectList(ViewBag.TransactionType, "Value", "Text", type))">
+                        <option selected value=0>Todos</option>
+                    </select>
+                </div>
+                <div class="col-1">
+                    <span class="input-group-text">Conta</span>
+                    <select class="form-control filterFields" id="paymentAccount" asp-items="@(new SelectList(ViewBag.PaymentAccount, "Value", "Text", paymentAccount))">
+                        <option selected value=0>Todos</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <span class="input-group-text">De</span>
+                    <input class="form-control filterFields" type="date" id="dateStart" />
+                </div>
+                <div class="col-2">
+                    <span class="input-group-text">Até</span>
+                    <input class="form-control filterFields" type="date" id="dateEnd" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container-fluid" id="transactions-container">
+    @await Html.PartialAsync("_IndexPartialView")
+</div>
+
+@* <div id="modal" class="modal fade" role="dialog" /> *@
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            RestoreTransactionsFilterFromStorage();
+            TransactionsFilter();
+        });
+
+        $(document).on('change', '.filterFields', function () {
+            var isExpense = $("#isExpense").val();
+            var isIncurred = $('#isIncurred').val();
+            var dateStart = $('#dateStart').val();
+            var dateEnd = $('#dateEnd').val();
+            var category = $('#category').val();
+            var subcategory = $('#subcategory').val();
+            var type = $('#type').val();
+            var paymentAccount = $('#paymentAccount').val();
+            var searchString = $('#searchString').val();
+            var sortOrder = sessionStorage.sortOrder;
+            var currentFilter = $('#searchString').val();
+            var pageNumber = $('#pageNumber').val();
+            var pageSize = $('#pageSize').val();
+
+            SaveTransactionsFilterParams(isExpense, isIncurred, category, subcategory, type, paymentAccount, dateStart, dateEnd, searchString, currentFilter, sortOrder, pageNumber, pageSize);
+            TransactionsFilter();
+        });
+        $(document).on('input', '#searchString', function () {
+            var debounceTimer;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+                var isExpense = $("#isExpense").val();
+                var isIncurred = $('#isIncurred').val();
+                var dateStart = $('#dateStart').val();
+                var dateEnd = $('#dateEnd').val();
+                var category = $('#category').val();
+                var subcategory = $('#subcategory').val();
+                var type = $('#type').val();
+                var paymentAccount = $('#paymentAccount').val();
+                var searchString = $('#searchString').val();
+                var sortOrder = sessionStorage.sortOrder;
+                var currentFilter = $('#searchString').val();
+                SaveTransactionsFilterParams(isExpense, isIncurred, category, subcategory, type, paymentAccount, dateStart, dateEnd, searchString, currentFilter, sortOrder);
+                TransactionsFilter();
+            }, 300);
+        });
+
+        $(document).on('click', '#clearFilter', function () {
+            $('#isExpense').val(0);
+            $('#isIncurred').val(0);
+            $('#dateStart').val("");
+            $('#dateEnd').val("");
+            $('#category').val(0);
+            $('#subcategory').val(0);
+            $('#type').val(0);
+            $('#paymentAccount').val(0);
+            $('#searchString').val("");
+
+            var isExpense = $("#isExpense").val();
+            var isIncurred = $('#isIncurred').val();
+            var dateStart = $('#dateStart').val();
+            var dateEnd = $('#dateEnd').val();
+            var category = $('#category').val();
+            var subcategory = $('#subcategory').val();
+            var type = $('#type').val();
+            var paymentAccount = $('#paymentAccount').val();
+            var searchString = $('#searchString').val();
+            var sortOrder = "Date";
+            var currentFilter = $('#searchString').val();
+
+            SaveTransactionsFilterParams(isExpense, isIncurred, category, subcategory, type, paymentAccount, dateStart, dateEnd, searchString, currentFilter, sortOrder);
+            TransactionsFilter();
+        });
+        $(document).on('click', '.sortField', function () {
+            var isExpense = $("#isExpense").val();
+            var isIncurred = $('#isIncurred').val();
+            var dateStart = $('#dateStart').val();
+            var dateEnd = $('#dateEnd').val();
+            var category = $('#category').val();
+            var subcategory = $('#subcategory').val();
+            var type = $('#type').val();
+            var paymentAccount = $('#paymentAccount').val();
+            var searchString = $('#searchString').val();
+            var sortOrder = $(this).attr('data-sort');
+            var currentFilter = $('#searchString').val();
+
+            SaveTransactionsFilterParams(isExpense, isIncurred, category, subcategory, type, paymentAccount, dateStart, dateEnd, searchString, currentFilter, sortOrder);
+            TransactionsFilter();
+        });
+        $(document).on('change', '#category', function () {
+            console.log('change category');
+            var url = '@ViewBag.Url/' + 'Transactions/';
+            var categoryId = $(this).val();
+            var subcategoryElementId = "subcategory";
+            var typeElementId = "#type";
+            GetSubcategoriesList(url, categoryId, subcategoryElementId);
+            ClearTypesList(typeElementId);
+        });
+        $(document).on('change', '#subcategory', function () {
+            var url = '@ViewBag.Url/' + 'Transactions/';
+            var subcategoryId = $(this).val();
+            var typeElementId = "#type";
+            GetTypesList(url, subcategoryId, typeElementId);
+        });
+        $(document).ready(function () {
+            //var isIncurred = @isIncurred;
+            //$("#isIncurred").val(String(isIncurred));
+        });
+    </script>
+}

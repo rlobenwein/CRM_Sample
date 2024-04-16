@@ -1,0 +1,21 @@
+﻿#tdSalesFunnel {
+    padding: 0 !important;
+    vertical-align:middle !important;
+}
+#card-products {
+    padding: 0.25rem;
+}
+.card-products {
+    flex:auto;
+}
+.badge-home{
+    color:#FFF;
+    font-size:100%;
+}
+#Description {
+    white-space: pre-wrap;
+}
+#loadOfxFile {
+    width: 400px !important;
+
+}

@@ -1,0 +1,48 @@
+﻿@model RLBW_ERP.Models.FinanceModels.TransactionType
+
+@{
+    ViewData["Title"] = "Excluir Tipo";
+}
+
+<h4>Excluir Tipo de transação</h4>
+
+<h5 class="alert-danger">Tem certeza?</h5>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SubcategoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Subcategory.Name)
+        </dd>
+    </dl>
+    <div class="text-danger">
+        @Html.ValidationSummary()
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        @if (ViewBag.Error)
+        {
+            <input type="submit" value="Excluir" class="btn btn-sm btn-outline-danger" disabled />
+        }
+        else
+        {
+            <input type="submit" value="Excluir" class="btn btn-sm btn-outline-danger" />
+        }
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+    </form>
+</div>

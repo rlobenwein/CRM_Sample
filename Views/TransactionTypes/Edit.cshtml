@@ -1,0 +1,102 @@
+﻿@model RLBW_ERP.Models.FinanceModels.TransactionType
+
+@{
+    ViewData["Title"] = "Editar Tipo";
+}
+
+<h4>Editar Tipo de transação</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model != null)
+            {
+                <div class="form-group form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="isExpense" checked="@ViewBag.IsExpense">
+                    <label class="form-check-label" for="isExpense">Despesa</label>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Categoria</label>
+                    <select class="form-control" id="category" asp-items="@ViewBag.CategoryId"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SubcategoryId" class="control-label"></label>
+                    <select asp-for="SubcategoryId" class="form-control" id="subcategory" asp-items="@ViewBag.SubcategoryId"></select>
+                </div>
+            }
+            else
+            {
+                <div class="form-group form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="isExpense" checked>
+                    <label class="form-check-label" for="isExpense">Despesa</label>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Categoria</label>
+                    <select class="form-control" id="category" asp-items="@ViewBag.CategoryId"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SubcategoryId" class="control-label"></label>
+                    <select asp-for="SubcategoryId" class="form-control" id="subcategory" asp-items="@ViewBag.SubcategoryId"></select>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^[0-9]+(,[0-9]+)?$/.test(value);
+        };
+        $(document).on('change', '#isExpense', function () {
+            var url = '@ViewBag.Url/' + 'Transactions/GetCategoriesList';
+            var isExpense = $(this).prop("checked");
+            var selectItem = "<option value=0>Selecione</option>";
+            $('#category').empty();
+            $('#category').html(selectItem);
+            $('#subcategory').empty();
+            $('#subcategory').html(selectItem);
+
+            $.getJSON(url, { isExpense: isExpense }, function (data) {
+                var items = "<option value=0>Selecione</option>";
+                $('#category').empty();
+                $.each(data, function (i, category) {
+                    items += "<option value='" + category.value + "'>" + category.text + "</option>";
+                });
+                $('#category').html(items);
+            });
+        });
+        $(document).on('change', '#category', function () {
+            var url = '@ViewBag.Url/' + 'Transactions/GetSubcategoriesList';
+            var categoryId = $(this).val();
+
+            $.getJSON(url, { categoryId: categoryId }, function (data) {
+                var items = "<option value=0>Selecione</option>";
+                $('#subcategory').empty();
+                $.each(data, function (i, subcategory) {
+                    items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                });
+                $('#subcategory').html(items);
+            });
+        });
+    </script>
+}

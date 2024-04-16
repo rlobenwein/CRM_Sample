@@ -1,0 +1,46 @@
+﻿@model RLBW_ERP.Models.LocationModels.Country
+
+@{
+    ViewData["Title"] = "Estados";
+}
+
+<h4><strong>@ViewData["SelectedCountry"] </strong>: Estados/Províncias (@Model.States.Count)</h4>
+
+<div>
+    <p>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Create" asp-controller="States" asp-route-id="@Model.Id">Inserir Estado</a> <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+    </p>
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                Estado
+            </th>
+            <th>
+                Sigla
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.States)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Acronym)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="States" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-controller="States" asp-route-id="@item.Id">Cidades</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+</div>

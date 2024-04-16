@@ -1,0 +1,131 @@
+﻿@model RLBW_ERP.Models.FinanceModels.Transaction
+
+@{
+    ViewData["Title"] = "Cadastrar Transação";
+}
+
+<h4>Nova transação</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BankTransactionId" class="form-control" value="@(Guid.NewGuid().ToString())" />
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" id="isExpense" asp-for="IsExpense" /> @Html.DisplayNameFor(model => model.IsExpense)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" id="IsIncurred" asp-for="IsIncurred" /> @Html.DisplayNameFor(model => model.IsIncurred)
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="category" class="control-label"></label>
+                <select name="category" id="category" class="form-control" asp-items="@(new SelectList(ViewBag.CategoryId, "Value", "Text"))"></select>
+            </div>
+            <div class="form-group">
+                <label for="subcategory" class="control-label"></label>
+                <select name="subcategory" id="subcategory" class="form-control" asp-items="@(new SelectList(string.Empty, "Value", "Text"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeId" class="control-label"></label>
+                <select asp-for="TypeId" id="type" class="form-control" asp-items="@(new SelectList(string.Empty, "Value", "Text"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Value" class="control-label"></label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Document" class="control-label"></label>
+                <input asp-for="Document" class="form-control" />
+                <span asp-validation-for="Document" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentAccountId" class="control-label"></label>
+                <select asp-for="PaymentAccountId" class="form-control" asp-items="ViewBag.PaymentAccountId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-sm btn-outline-secondary" />
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^[0-9]+(,[0-9]+)?$/.test(value);
+        };
+        $(document).on('change', '#isExpense', function () {
+            var url = '@ViewBag.Url/' + 'Transactions/GetCategoriesList';
+            var isExpense = $(this).prop("checked");
+            var selectItem = "<option value=0>Selecione</option>";
+            $('#category').empty();
+            $('#category').html(selectItem);
+            $('#subcategory').empty();
+            $('#subcategory').html(selectItem);
+            $('#type').empty();
+            $('#type').html(selectItem);
+
+            $.getJSON(url, { isExpense: isExpense }, function (data) {
+                var items = "<option value=0>Selecione</option>";
+                $('#category').empty();
+                $.each(data, function (i, category) {
+                    items += "<option value='" + category.value + "'>" + category.text + "</option>";
+                });
+                $('#category').html(items);
+            });
+        });
+        $(document).on('change', '#category', function () {
+            var url = '@ViewBag.Url/' + 'Transactions/GetSubcategoriesList';
+            var categoryId = $(this).val();
+
+            $.getJSON(url, { categoryId: categoryId }, function (data) {
+                var items = "<option value=0>Selecione</option>";
+                $('#subcategory').empty();
+                $.each(data, function (i, subcategory) {
+                    items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                });
+                $('#subcategory').html(items);
+            });
+        });
+        $(document).on('change', '#subcategory', function () {
+            var url = '@ViewBag.Url/' + 'Transactions/GetTypesList';
+            var subcategoryId = $(this).val();
+
+            $.getJSON(url, { subcategoryId: subcategoryId }, function (data) {
+                var items = "<option value=0>Selecione</option>";
+                $('#type').empty();
+                $.each(data, function (i, type) {
+                    items += "<option value='" + type.value + "'>" + type.text + "</option>";
+                });
+                $('#type').html(items);
+            });
+        });
+    </script>
+}

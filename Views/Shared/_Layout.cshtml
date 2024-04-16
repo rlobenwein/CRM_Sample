@@ -1,0 +1,155 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CRM ERP</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style type="text/css">
+        body {
+            padding-top: 70px;
+        }
+    </style>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/transactions_page.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/jquery.PopulateProductFields.js"></script>
+    <script src="~/js/jquery.maskMoney.min.js" type="text/javascript"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</head>
+<body>
+    <header class="container-fluid">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light ">
+            <div class="navbar-collapse collapse container-fluid">
+                <ul class="nav navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @Html.ActionLink("ERP", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src=~/img/RLBWTech_logo_50x50.png /></a>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Início<span class="caret"></span></a>
+                        </li>
+
+                        <li class="nav-item btn-group">
+                            <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Oportunidades <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index">Todas</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Opened">Abertas</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Sold">Vendidas</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Freezed">Congeladas</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Canceled">Canceladas</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Lost">Perdidas</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Create">Cadastrar</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item btn-group">
+                            <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Clientes <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index" asp-route-active="true">Ativos</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index" asp-route-active="false">Todos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Create">Cadastrar</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item btn-group">
+                            <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Contatos <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="People" asp-action="Index" asp-route-active="true">Ativos</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="People" asp-action="Index" asp-route-active="false">Todos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="People" asp-action="Create">Cadastrar</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item btn-group">
+                            <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Comercial<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><strong><a class="nav-link text-dark" asp-area="" asp-controller="PlannedActions" asp-action="Index">Lista de Tarefas</a></strong></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Proposals" asp-action="Index">Propostas</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PurchaseOrders" asp-action="Index">Pedidos</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PaymentTerms" asp-action="Index">Condições de Pagamento</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Lista de Países</a></li>
+                            </ul>
+                        </li>
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Director"))
+                        {
+
+                            <li class="nav-item btn-group">
+                                <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Adm Comercial<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link text-dark" asp-controller="Pipelines" asp-action="Index">Estágios Pipeline</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Softwares" asp-action="Index">Software</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Fields" asp-action="Index">Campos de Atuação</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Categories" asp-action="Index">Categorias</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="ErpUsers" asp-action="Index">Responsáveis</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="ActionTypes" asp-action="Index">Tipo de Ação</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Produtos</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="SubProducts" asp-action="Index">SubProdutos</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="LicenseTimes" asp-action="Index">Tempo de Licença</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="LicenseNetworkTypes" asp-action="Index">Licenças de Rede</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="LicenseOptionals" asp-action="Index">Opcionais</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item btn-group">
+                                <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Usuários<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Permissões</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Usuários</a></li>
+                                </ul>
+                            </li>
+                        }
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <li class="nav-item btn-group">
+                                <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Financeiro<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="MonthBalances" asp-action="Index">Balanços Mensais</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index" asp-route-isIncurredStr="true">Diário</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Budgets" asp-action="Index">Orçamento</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionDistributions" asp-action="Index">Distribuição das Transações</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionCategories" asp-action="Index">Categorias (transações)</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionSubcategories" asp-action="Index">Subcategorias (transações)</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionTypes" asp-action="Index">Tipos (transações)</a></li>
+                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="PaymentAccounts" asp-action="Index">Contas de pagamento</a></li>
+                                </ul>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <strong><a class="nav-link text-dark" asp-area="" asp-controller="PlannedActions" asp-action="Index">Lista de Tarefas</a></strong>
+                        </li>
+                    }
+                </ul>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-content-around">
+                </ul>
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+
+    </header>
+    <div class="container-fluid" style="width:98%">
+        <main role="main" class="container-fluid">
+            @RenderBody()
+            <div id="modal" class="modal fade" role="dialog" />
+
+        </main>
+    </div>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2022 - <a href=# target="_blank">RLBW Tech</a>
+            </div>
+        </footer>
+    }
+</body>
+</html>

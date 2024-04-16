@@ -1,0 +1,37 @@
+﻿@model RLBW_ERP.Models.SalesModels.SubproductsList
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" class="myForm" method="post">
+                <div class="modal-header">
+                    <input type="hidden" asp-for="Id"/>
+                    <input type="hidden" asp-for="ProposalProductId"/>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <h5>Editar subproduto para @Model.ProposalProduct.Category.CategoryName @Model.ProposalProduct.Product.Name:</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="SubproductId" class="control-label"></label>
+                        <select asp-for="SubproductId" class="form-control" asp-items="ViewBag.SubproductId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Quantity" class="control-label"></label>
+                        <input asp-for="Quantity" class="form-control"/>
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <a class="btn btn-sm btn-outline-secondary ProposalProductDetails" data-bs-target="#modal" data-proposalProductId=@Model.ProposalProductId>Voltar</a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

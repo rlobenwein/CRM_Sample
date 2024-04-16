@@ -1,0 +1,247 @@
+﻿@using System.Globalization
+@using RLBW_ERP.Common;
+@model RLBW_ERP.Models.ViewModels.StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Início";
+    int tempActions = 0;
+    int userActions = 0;
+    int semesterActions = 0;
+    double semesterActionsAvg = 0;
+    var workingDaysGlobal = DateTimeFunctions.CountWorkingDays(new DateTime(2016, 11, 1), DateTime.Today);
+    double semesterWorkingDays = DateTimeFunctions.CountWorkingDays(DateTime.Today.AddMonths(-6), DateTime.Today);
+
+}
+<div class="row">
+    <div class="col-4">
+        <h5 id="dollarValue">Dólar: Carregando... - <a target="_blank" href="https://www.bcb.gov.br/estabilidadefinanceira/fechamentodolar">Banco Central</a></h5>
+        <h6 id="euroValue">Euro: Carregando...</h6>
+        <h7 id="bulletin">Boletim: Carregando...</h7>
+        <hr />
+        <ul class="list-group list-group-numbered">
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">Oportunidades</div>
+                </div>
+                <span class="badge badge-home bg-primary rounded-pill">@Model.OpportinitiesAll</span>
+                <ul>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Abertas</div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.OpportunitiesOpened</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Vendidas</div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.OpportunitiesSold</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Canceladas</div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.OpportunitiesCanceled</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Congeladas</div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.OpportunitiesFreezed</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Perdidas</div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.OpportunitiesLost</span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="list-group list-group-numbered">
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">Ações</div>
+                </div>
+                <span class="badge badge-home bg-primary rounded-pill">@Model.ActionsAll</span>
+                <ul>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Executadas</div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.ActionsDone</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold"><a asp-controller="PlannedActions" asp-action="Index">Planejadas</a></div>
+                        </div>
+                        <span class="badge badge-home bg-primary rounded-pill">@Model.ActionsPlanned</span>
+                        <ul>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Futuras</div>
+                                </div>
+                                <span class="badge badge-home bg-primary rounded-pill">@Model.ActionsUpToDate</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Hoje!</div>
+                                </div>
+                                <span class="badge badge-home bg-primary rounded-pill">@Model.ActionsToday</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Atrasadas</div>
+                                </div>
+                                <span class="badge badge-home bg-danger rounded-pill">@Model.ActionsDelayed</span>
+                            </li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="col-4">
+        <div class="row">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th rowspan="2">
+                            Nome
+                        </th>
+                        <th rowspan="2">
+                            Ações Totais
+                        </th>
+                        <th colspan="7">
+                            Últimos 6 meses
+                        </th>
+                        <th></th>
+                        <th colspan="7">
+                            Realizadas hoje e últimos 7 dias
+                        </th>
+                    </tr>
+                    <tr>
+                        @for (var i = 0; i < 6; i++)
+                        {
+                            <th>
+                                @DateTime.Today.AddMonths(-i).ToString("MMM",CultureInfo.CreateSpecificCulture("pt-BR"))
+                            </th>
+                        }
+                        <th>
+                            Total
+                        </th>
+                        <th></th>
+                        <th>Hoje</th>
+                        @for (var i = 1; i <= 7; i++)
+                        {
+                            <th>
+                                @DateTime.Today.AddDays(-i).ToString("ddd",CultureInfo.CreateSpecificCulture("pt-BR"))
+                            </th>
+                        }
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in @Model.ErpUsers)
+                    {
+                        semesterActions = 0;
+                        <tr>
+                            <td>
+                                <strong>
+                                    @Html.DisplayFor(modelItem=>user.ErpUserName)
+                                </strong>
+
+                            </td>
+                            <td>
+                                @user.OpportunityActions.Count()
+                            </td>
+
+                            @for (var i = 0; i < 6; i++)
+                            {
+                                <td>
+                                    @{
+                                        var targetMonth = DateTime.Today.AddMonths(-i).Month;
+                                        var targetYear = targetMonth > DateTime.Today.Month ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+                                    }
+                                    @{
+                                        tempActions = user.OpportunityActions.Where(o =>
+                                            o.Date.Month == targetMonth &&
+                                            o.Date.Year == targetYear).Count();
+                                    }
+                                    @tempActions
+                                    @{
+                                        semesterActions += tempActions;
+                                    }
+                                </td>
+                            }
+                            <td>
+                                <strong>
+                                    @semesterActions
+                                </strong>
+                            </td>
+                            <td></td>
+                            <td>
+                                @user.OpportunityActions.Where(o=>
+                            o.Date.Date==DateTime.Today &&
+                            o.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                            </td>
+                            @for (var j = 1; j <= 7; j++)
+                            {
+                                <td>
+                                    @user.OpportunityActions.Where(o=>
+                            o.Date.Date==DateTime.Today.AddDays(-j)&&
+                            o.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+
+                                </td>
+                            }
+                            <td>
+                                <strong>
+
+                                    @user.OpportunityActions.Where(o=>
+                                o.Date.Date>DateTime.Today.AddDays(-7)&&
+                                o.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#dollarValue').text('Dólar: Carregando...');
+        $('#euroValue').text('Euro: Carregando...');
+        $('#bulletin').text('Boletim: Carregando...');
+
+        $.ajax({
+            url: '@ViewBag.Url/Home/GetExchangeRateValues',
+            type: 'GET',
+            success: function (data) {
+                var dollarValue = data.dollarValue === 0 ? "Erro" : data.dollarValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 8 }) + ' (Venda)';
+                var euroValue = data.euroValue === 0 ? "Erro" : data.euroValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 8 }) + ' (Venda)';
+                var exchangeDate = new Date(data.exchangeDate);
+
+                if (isNaN(exchangeDate.getTime())) {
+                    exchangeDate = null;
+                }
+
+                var formattedDate = exchangeDate ? ' (' + exchangeDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ')' : 'Invalid Date';
+                $('#dollarValue').text('Dólar: ' + dollarValue);
+                $('#euroValue').text('Euro: ' + euroValue);
+                $('#bulletin').text('Boletim: ' + data.bulletin + formattedDate);
+            },
+            error: function (e) {
+                console.log(e);
+                $('#dollarValue').text('Erro');
+                $('#euroValue').text('Erro');
+                $('#bulletin').text('Erro');
+            }
+        });
+    });
+</script>

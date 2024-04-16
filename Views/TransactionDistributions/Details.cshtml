@@ -1,0 +1,36 @@
+﻿@model RLBW_ERP.Models.FinanceModels.TransactionDistribution
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Distribuição das transações</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CostCenterId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CostCenterId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TransactionId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Proportion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Proportion)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar para a lista</a>
+</div>

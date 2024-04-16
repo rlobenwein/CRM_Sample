@@ -1,0 +1,108 @@
+﻿@model RLBW_ERP.Models.ViewModels.CostCenterCreateTransactionViewModel
+
+<div >
+    <form asp-action="Create" asp-controller="TransactionDistributions" class="myForm" method="post">
+        <h5>Distribuir Transações para o Centro de Custo @Model.CostCenterId</h5>
+        <div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CostCenterId" />
+            <hr />
+            <h5>Transações já distribuídas</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-1">Data</th>
+                        <th class="col-2">Categoria</th>
+                        <th class="col-2">Subcategoria</th>
+                        <th class="col-2">Tipo</th>
+                        <th class="col-3">Descrição</th>
+                        <th class="col-1">Valor</th>
+                        <th class="col-1">Proporção</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.TransactionDistributions.Count(); i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.TransactionDistributions[i].Transaction.Date.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Model.TransactionDistributions[i].Transaction.TransactionType.Subcategory.Category.Name
+                            </td>
+                            <td>
+                                @Model.TransactionDistributions[i].Transaction.TransactionType.Subcategory.Name
+                            </td>
+                            <td>
+                                @Model.TransactionDistributions[i].Transaction.TransactionType.Name
+                            </td>
+                            <td>
+                                @Model.TransactionDistributions[i].Transaction.Description
+                            </td>
+                            <td>
+                                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.TransactionDistributions[i].Transaction.Value)
+                            </td>
+                            <td>
+                                <input asp-for="TransactionDistributions[i].Id" type="hidden" class="form-control" />
+                                <input asp-for="TransactionDistributions[i].Proportion" class="form-control" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <h5>Transações a distribuir</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-1">Data</th>
+                        <th class="col-2">Categoria</th>
+                        <th class="col-2">Subcategoria</th>
+                        <th class="col-2">Tipo</th>
+                        <th class="col-3">Descrição</th>
+                        <th class="col-1">Valor</th>
+                        <th class="col-1">Proporção</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Transactions.Count(); i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.Transactions[i].Date.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Model.Transactions[i].Category
+                            </td>
+                            <td>
+                                @Model.Transactions[i].Subcategory
+                            </td>
+                            <td>
+                                @Model.Transactions[i].Type
+                            </td>
+                            <td>
+                                @Model.Transactions[i].Description
+                            </td>
+                            <td>
+                                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.Transactions[i].Value)
+                            </td>
+                            <td>
+                                <input asp-for="Transactions[i].Id" value="@Model.Transactions[i].Id" type="hidden" class="form-control" />
+                                <input asp-for="Transactions[i].Proportion" class="form-control" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="form-group col">
+                <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

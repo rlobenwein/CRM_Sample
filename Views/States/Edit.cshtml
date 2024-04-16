@@ -1,0 +1,35 @@
+﻿@model RLBW_ERP.Models.LocationModels.State
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4>@ViewData["SelectedState"] (@ViewData["SelectedCountry"]): Editar</h4>
+<hr />
+<form asp-action="Edit">
+    <div class="row input-group mb-3">
+        <div class="col-6 col-md-4 input-group mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CountryId" value="@Model.CountryId"/>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Name)</span>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Acronym)</span>
+                <input asp-for="Acronym" class="form-control" />
+                <span asp-validation-for="Acronym" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                <a asp-action="Details" asp-controller="Countries" asp-route-id="@Model.CountryId" class="btn btn-sm btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

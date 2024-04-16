@@ -1,0 +1,54 @@
+﻿@model IEnumerable<RLBW_ERP.Models.LocationModels.State>
+
+@{
+    ViewData["Title"] = "Estados";
+    //Country country = new Country() { Id = (int)ViewData["Id"] };
+}
+
+<h4>Estados/Províncias do país <strong>@ViewData["SelectedCountry"] Id:@ViewData["Id"] </strong></h4>
+
+@if ((string)ViewData["SelectedCountry"] == "Brasil")
+{
+    if (!User.IsInRole("SuperAdmin"))
+    {
+        <p>
+            <a class="btn btn-sm btn-outline-secondary" href="#">Inserir Estado</a>
+        </p>
+    }
+}
+else
+{
+    <p>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Create" asp-controller="States" asp-route-id="@ViewData["Id"]">Inserir Estado</a>
+    </p>
+}
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                Estado
+            </th>
+            <th>
+                Sigla
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Acronym)
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="States" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Index" asp-controller="Cities" asp-route-id="@item.Id">Cidades</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

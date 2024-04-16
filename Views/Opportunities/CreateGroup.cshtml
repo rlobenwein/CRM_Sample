@@ -1,0 +1,77 @@
+﻿@model RLBW_ERP.Models.SalesModels.Opportunity
+@{
+    Layout = null;
+    ViewData["Title"] = "Oportunidade";
+    var noOpportunities = ViewBag.NoOpportunities;
+}
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @if (noOpportunities)
+            {
+                <div class="modal-header">
+                    <h5>Erro</h5>
+                </div>
+                <div class="modal-body">
+                    <h6>Não existem Oportunidades disponíveis para associação. Cadastre nova oportunidade para então associa-las.</h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            }
+            else
+            {
+                @using (Html.BeginForm())
+                {
+                    <div class="modal-header">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="OpportunityGroup" />
+                        <h5>Oportunidades disponíveis para associação</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        <hr />
+                    </div>
+                    <div class="modal-body">
+                        <h6>
+                            Se a oportunidade procurada não está na lista abaixo,<br>
+                            verifique se ela já não está associada a outras oportunidades
+                        </h6>
+                        <ul class="list-group">
+                            @for (int i = 0; i < Model.OpportunitiesRelated.Count; i++)
+                            {
+                                <li class="list-group-item">
+
+                                    @Html.CheckBoxFor(x => x.OpportunitiesRelated[i].Checked, new { htmlAttributes = new { @class = "form-control" } })
+                                    <label class="control-label">@Html.DisplayFor(x => x.OpportunitiesRelated[i].Id)</label>
+                                    - 
+                                    @if (Model.OpportunitiesRelated[i].Title!=null)
+                                    {
+                                        @Html.DisplayFor(x=>x.OpportunitiesRelated[i].Title)
+                                    }else{
+
+                                    @Html.DisplayFor(x=>x.OpportunitiesRelated[i].Product.Category.CategoryName); 
+                                    @Html.Raw(" ")
+                                    @Html.DisplayFor(x=>x.OpportunitiesRelated[i].Product.Name)
+                                    }
+
+                                    @Html.HiddenFor(x => x.OpportunitiesRelated[i].Id)
+                                    @Html.HiddenFor(x => x.OpportunitiesRelated[i].CompanyId)
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" asp-route-currentOpportunityId="@ViewBag.OpportunityId" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+        }

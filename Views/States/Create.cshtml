@@ -1,0 +1,39 @@
+﻿@model RLBW_ERP.Models.LocationModels.State
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" class="myForm" method="post">
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="CountryId" />
+                    <h5>Inserir estado/província para: @ViewData["SelectedCountry"]</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Name)</span>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Acronym)</span>
+                        <input asp-for="Acronym" class="form-control" />
+                        <span asp-validation-for="Acronym" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary saveButton" />
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

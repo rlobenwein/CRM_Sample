@@ -1,0 +1,40 @@
+﻿@model RLBW_ERP.Models.LocationModels.State
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4>@ViewData["SelectedCountry"]/@Html.DisplayFor(model => model.Name): Cidades</h4>
+
+<div>
+    <p>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Create" asp-controller="Cities" asp-route-id="@Model.Id">Inserir Cidade</a> <a class="btn btn-sm btn-outline-secondary" asp-controller="Countries" asp-action="Details" asp-route-id="@Model.CountryId">Voltar</a>
+    </p>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Nome
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Cities)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Cities" asp-route-id="@item.Id">Editar</a>
+@*                        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-controller="Cities" asp-route-id="@item.CityId">Empresas</a>
+*@                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-controller="Countries" asp-action="Details" asp-route-id="@Model.CountryId">Voltar</a>
+</div>

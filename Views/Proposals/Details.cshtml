@@ -1,0 +1,155 @@
+﻿@using static RLBW_ERP.Models.SalesModels.Proposal
+@using static RLBW_ERP.Common.Currency
+@model RLBW_ERP.Models.SalesModels.Proposal
+
+<div class="container">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="col">
+                    <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="OpportunityId" />
+                        <input type="hidden" asp-for="Revision" />
+                        <h5>Detalhes da Proposta @Html.DisplayFor(modelItem => Model.Id) da Oportunidade @Html.DisplayFor(modelItem => Model.OpportunityId)</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="row">
+                        @if (Model.Revision != null)
+                        {
+                            <h7>Proposta Revisada: @Model.Revision</h7>
+                        }
+                        else
+                        {
+                            <h7>Revisão 0 (Emissão inicial)</h7>
+                        }
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.Date): </strong>@Html.DisplayFor(modelItem=>Model.Date)
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.ExpirationTime): </strong>@Html.DisplayFor(modelItem=>Model.ExpirationTime) (Até @Model.Date.AddDays(Model.ExpirationTime).ToShortDateString())
+
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.Currency): </strong>@Html.DisplayFor(modelItem=>Model.Currency)
+
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.BasePrice): </strong>@Html.DisplayFor(modelItem=>Model.BasePrice)
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(model => model.Discount):</strong> @Html.DisplayFor(model => model.Discount)%
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.Price): </strong>@Html.DisplayFor(modelItem=>Model.Price)
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.PriceBrl): </strong>@Html.DisplayFor(modelItem=>Model.PriceBrl)
+
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.DelireryTime): </strong>@Html.DisplayFor(modelItem=>Model.DelireryTime)
+
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.ExchangeRate): </strong>@Html.DisplayFor(modelItem=>Model.ExchangeRate)
+
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.Status): </strong>@Html.DisplayFor(modelItem=>Model.Status)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <h6>
+                                        Produto(s) <a class="btn btn-sm btn-outline-secondary ProposalProductCreate" data-proposalId="@Model.Id">Incluir</a>
+                                    </h6>
+                                    @if (Model.Products.Count != 0)
+                                    {
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (var product in Model.Products)
+                                            {
+                                                <li class="list-group-item">
+                                                    <a href="#" class="stretched-link ProposalProductDetails" data-proposalProductId="@product.Id">
+                                                        @Html.DisplayFor(modelItem=>product.Category.CategoryName)
+                                                        @Html.DisplayFor(modelItem=>product.Product.Name) -
+                                                        @Html.DisplayFor(modelItem=>product.Price)
+                                                        @Html.DisplayFor(modelItem=>product.Product.Currency)
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>@Html.DisplayNameFor(modelItem=>Model.Notes): </strong>@Html.DisplayFor(modelItem=>Model.Notes)
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @if (Model.Status == ProposalStatus.Opened)
+                {
+                    <a class="btn btn-sm btn-outline-secondary CreatePO" data-proposalId=@Model.Id>Vendida! Gerar Pedido</a>
+                    <a class="btn btn-sm btn-outline-secondary EditProposal" data-proposalId=@Model.Id>Editar</a>
+                    <a class="btn btn-sm btn-outline-secondary ReviewProposal" data-opportunityId=@Model.OpportunityId data-proposalId=@Model.Id>Revisar</a>
+                }
+                else if (User.IsInRole("SuperAdmin") || User.IsInRole("Director"))
+                {
+                    <a class="btn btn-sm btn-outline-danger CreatePO" data-proposalId=@Model.Id>Vendida! Gerar Pedido</a>
+                    <a class="btn btn-sm btn-outline-danger EditProposal" data-proposalId=@Model.Id>Editar</a>
+                    <a class="btn btn-sm btn-outline-danger ReviewProposal" data-opportunityId=@Model.OpportunityId data-proposalId=@Model.Id>Revisar</a>
+                }
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Director"))
+                {
+                    <a class="btn btn-sm btn-outline-danger DeleteProposal" data-proposalId=@Model.Id>Excluir</a>
+                }
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

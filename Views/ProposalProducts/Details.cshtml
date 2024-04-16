@@ -1,0 +1,99 @@
+﻿@model RLBW_ERP.Models.SalesModels.ProposalProduct
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" class="myForm" method="post">
+                <div class="modal-header">
+                    <div class="col">
+                        <div class="row">
+                            <input type="hidden" asp-for="Id" />
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <h5 class="modal-title">Detalhes do produto na proposta @Model.ProposalId</h5>
+                            <br>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <p class="modal-title">
+                                @Model.Category.CategoryName
+                                @Model.Product.Name
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <strong>
+                                            @Html.DisplayNameFor(model => model.BasePrice):
+                                        </strong>
+                                        @Html.DisplayFor(model => model.BasePrice)
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>
+                                            @Html.DisplayNameFor(model => model.Discount):
+                                        </strong>
+                                        @Html.DisplayFor(model => model.Discount)%
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>
+                                            @Html.DisplayNameFor(model => model.Price):
+                                        </strong>
+                                        @Html.DisplayFor(model => model.Price)
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h6>
+                                            Subprodutos
+                                            <a class="btn btn-sm btn-outline-secondary SubproductListItemCreate" data-ProposalProductId="@Model.Id" data-ProductId="@Model.ProductId">Incluir</a>
+                                        </h6>
+                                        @if (Model.Subproducts.Count != 0)
+                                        {
+                                            <ul>
+                                                @foreach (var subProduct in Model.Subproducts)
+                                                {
+                                                    <li>
+                                                        <a href="#" class="SubproductListItemDetails" data-SubproductListId="@subProduct.Id">
+                                                            @Html.DisplayFor(modelItem=>subProduct.SubProduct.Name) -
+                                                            Qde: @Html.DisplayFor(modelItem=>subProduct.Quantity)
+                                                            (Valor: @Html.DisplayFor(modelItem=>subProduct.Price))
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <a class="btn btn-sm btn-outline-secondary ProposalProductEdit" data-proposalProductId="@Model.Id">Editar</a>
+                        <a class="btn btn-sm btn-outline-secondary ProposalProductDelete" data-proposalProductId="@Model.Id">Excluir</a>
+                        <a class="btn btn-sm btn-outline-secondary ProposalDetails" data-proposalId=@Model.ProposalId>Voltar</a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

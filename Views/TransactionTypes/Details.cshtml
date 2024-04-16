@@ -1,0 +1,63 @@
+﻿@model RLBW_ERP.Models.ViewModels.TransactionTypeViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<h4>Tipo: @Html.DisplayFor(model => model.Name)</h4>
+<p>@(Model.IsExpense) > <a asp-controller="TransactionCategories" asp-action="Details" asp-route-id="@Model.CategoryId">@Html.DisplayFor(model => model.CategoryName)</a> > <a asp-controller="TransactionSubcategories" asp-action="Details" asp-route-id="@Model.SubcategoryId">@Html.DisplayFor(model => model.SubcategoryName)</a> > @Html.DisplayFor(model => model.Name)</p>
+<div>
+    <h4>Transações deste tipo</h4>
+    <hr />
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Conta</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var t in Model.Transactions)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(item=>t.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(item=>t.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(item=>t.Value)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(item=>t.PaymentAccountName)
+                    </td>
+                    <td>
+                        <div class="btn-group dropleft">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="/img/menu.svg" width="16" height="16">
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="list-group">
+                                    <a class="dropdown-item" asp-controller="MonthBalances" asp-action="Details" asp-route-year="@t.Date.Year" asp-route-month="@t.Date.Month">Balanço</a>
+                                    <a class="dropdown-item" asp-action="Details" asp-route-id="@t.Id">Detalhes</a>
+                                    <a class="dropdown-item" href="#">Centro de Custos</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+</div>

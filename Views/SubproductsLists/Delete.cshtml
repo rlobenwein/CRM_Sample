@@ -1,0 +1,40 @@
+﻿@model RLBW_ERP.Models.SalesModels.SubproductsList
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" class="myForm" method="post">
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ProposalProductId" />
+                    <h5 class="text-danger">Excluir subproduto <strong>@Model.SubProduct.Name</strong>?</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.SubProduct)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.SubProduct.Name)
+                        </dd>
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Quantity)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Quantity)
+                        </dd>
+
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

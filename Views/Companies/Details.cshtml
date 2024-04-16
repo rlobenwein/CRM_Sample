@@ -1,0 +1,335 @@
+﻿@using static RLBW_ERP.Models.SalesModels.OpportunityAction
+@model RLBW_ERP.Models.CustomerModels.Company
+
+@{
+    ViewData["Title"] = Model.FriendlyName + " - Detalhes";
+    string opportunityStatus = "";
+}
+
+<div class="row container-fluid h-100">
+    <div class="col-3">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>Cliente: @Html.DisplayFor(model => model.FriendlyName)</h5>
+            </div>
+            <div class="card-body pre-scrollable h-100">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Website):</strong> @Html.DisplayFor(model => model.Website)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.CompanyName):</strong> @Html.DisplayFor(model => model.CompanyName)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.TaxpayerNumber):</strong> @Html.DisplayFor(model => model.TaxpayerNumber)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.MainAddress): </strong>
+                        @Html.DisplayFor(model => model.MainAddress),
+                        @Html.DisplayFor(model => model.AddressNumber),
+                        @Html.DisplayFor(model => model.AddressComplement),
+                        @Html.DisplayFor(model => model.AddressDistrict),
+                        @Html.DisplayNameFor(model => model.PostalCode) @Html.DisplayFor(model => model.PostalCode),
+                        @Html.DisplayFor(model => model.City.Name)/
+                        @Html.DisplayFor(model => model.City.State.Acronym) -
+                        @Html.DisplayFor(model => model.City.State.Country.Name)
+                    </li>
+
+                    @if (Model.Status)
+                    {
+                        <li class="list-group-item">
+                            <strong> Situação:</strong> Cliente Ativo
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            <strong> Situação:</strong> Cliente Inativo
+                        </li>
+                    }
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.CompanyPhone):</strong> @Html.DisplayFor(model => model.CompanyPhone)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.CompanyEmail):</strong> @Html.DisplayFor(model => model.CompanyEmail)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.FinanceEmail):</strong> @Html.DisplayFor(model => model.FinanceEmail)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Notes):</strong> @Html.DisplayFor(model => model.Notes)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.LastUpdate):</strong> @Html.DisplayFor(model => model.LastUpdate)
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group dropright">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="/img/menu.svg" width="16" height="16">
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="list-group">
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="dropdown-item">Editar @Model.FriendlyName</a>
+                            <div class="dropdown-divider"></div>
+                            <a asp-action="Index" class="dropdown-item">Voltar p/ lista de Clientes</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>Contatos Ativos</h5>
+            </div>
+            <div class="card-body pre-scrollable h-100" id="contact-card">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                            <th>Celular Corp.</th>
+                            <th>Email Corp.</th>
+                            <th>Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Employees.Where(c => c.Status == true).OrderBy(e => e.Person.FirstName).ThenBy(e => e.Person.LastName))
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="People" asp-action="Details" asp-route-id="@item.PersonId"> @Html.DisplayFor(modelItem => item.Person.FullName)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Position)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CellPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.WorkEmail)
+                                </td>
+                                <td>
+                                    <div class="btn-group dropleft">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <img src="/img/menu.svg" width="16" height="16">
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <div class="list-group">
+                                                <a class="dropdown-item" asp-action="Edit" asp-controller="CompanyEmployees" asp-route-personId="@item.PersonId" asp-route-companyId="@item.CompanyId">Editar</a>
+                                                <a class="dropdown-item" asp-action="Details" asp-controller="CompanyEmployees" asp-route-personId="@item.PersonId" asp-route-companyId="@item.CompanyId">Detalhes</a>
+                                                @if (@User.IsInRole("SuperAdmin"))
+                                                {
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" asp-action="Delete" asp-controller="CompanyEmployees" asp-route-personId="@item.PersonId" asp-route-companyId="@item.CompanyId">Excluir</a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer mt-auto">
+                <div class="btn-group dropright">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="/img/menu.svg" width="16" height="16">
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class="list-group">
+                            <a asp-controller="CompanyEmployees" asp-route-companyId="@Model.Id" asp-action="Create" class="dropdown-item">Vincular Contato Existente</a>
+                            <button class="dropdown-item CreatePerson" data-companyId="@Model.Id">Novo Contato Vinculado</button>
+                            <div class="dropdown-divider"></div>
+                            <a asp-controller="CompanyEmployees" asp-route-companyId="@Model.Id" asp-action="Index" class="dropdown-item">Ver todos</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="card container-fluid">
+        <div class="card-header">
+            <h5>
+                @Html.DisplayNameFor(model => model.Opportunities) <a data-companyId="@Model.Id" class="btn btn-sm btn-outline-secondary NewOpportunity">Nova Oportunidade</a>
+
+            </h5>
+        </div>
+        <div class="card-body container-fluid">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nº</th>
+                        <th>Data</th>
+                        <th>Título/Produto</th>
+                        <th>Valor</th>
+                        <th>Gestor</th>
+                        <th>Pipeline</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                        <th>Propostas</th>
+                        <th>Última ação</th>
+                        <th>Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Opportunities.OrderByDescending(f => f.Date))
+                    {
+                        switch (item.Status)
+                        {
+                            case RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Canceled:
+                            case RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Declined:
+                                opportunityStatus = "OpportunityCanceled";
+                                break;
+                            case RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Sold:
+                                opportunityStatus = "OpportunitySold";
+                                break;
+                            default:
+                                opportunityStatus = "font-weight-normal";
+                                break;
+
+                        }
+                        <tr class=@opportunityStatus>
+                            <td>
+                                <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @if (item.Title != null)
+                                {
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                    ;
+                                }
+                                else if (item.ProductId != null)
+                                {
+                                    @Html.DisplayFor(modelItem => item.Product.Category.CategoryName)
+                                    ;
+                                    @Html.Raw(" ")
+                                    ;
+                                    @Html.DisplayFor(modelItem => item.Product.Name)
+                                    ;
+                                }
+                                else
+                                {
+                                    @Html.Raw("Não informado")
+                                    ;
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Value)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Manager.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Pipeline.Stage)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OpportunityActions.Count)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Proposals.Count)
+                            </td>
+                            <td>
+                                @if (item.OpportunityActions.Where(o => o.Status == ActionStatus.Done).Count() > 0)
+                                {
+                                    @item.OpportunityActions.Where(o=>o.Status == ActionStatus.Done).Max(o => o.Date)
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group dropleft">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="/img/menu.svg" width="16" height="16">
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <div class="list-group">
+                                            <a data-opportunityId="@item.Id" class="dropdown-item EditOpportunity">Editar</a>
+                                            <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">Detalhes</a>
+                                            <div class="dropdown-divider"></div>
+                                            @if (item.Status == RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Opened)
+                                            {
+                                                <button id="modalButton" data-opportunityId="@item.Id" class="dropdown-item Duplicate">Duplicar</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="dropdown-item" disabled>Duplicar</button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <a data-opportunityId="@Model.Id" class="btn btn-sm btn-outline-secondary NewOpportunity">Nova Oportunidade</a>
+        </div>
+    </div>
+</div>
+<div id="modal" class="modal fade" role="dialog" />
+
+@section scripts{
+    <script>
+        $(document).on('submit', '.myForm', function (e) {
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (html) {
+                    window.location.reload(true);
+                },
+                error: function (response) {
+                    console.log('erro: ', response);
+                }
+            });
+            e.preventDefault();
+        });
+
+        $(document).on('click', '.Duplicate', function () {
+            var opportunityId = $(this).attr("data-opportunityId");
+            var url = '@ViewBag.Url/Opportunities/Duplicate?opportunityId=' + opportunityId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '.EditOpportunity', function () {
+            var opportunityId = $(this).attr("data-opportunityId");
+            var url = '@ViewBag.Url' + '/Opportunities/Edit/' + opportunityId;
+            OpenModal(url, "#modal");
+        });
+        $(document).on('click', '.NewOpportunity', function () {
+            var companyId = $(this).attr("data-companyId");
+            var url = '@ViewBag.Url' + '/Opportunities/Create?companyId=' + companyId;
+            console.log(url);
+            OpenModal(url, "#modal");
+        });
+        $(document).on('change', '#CategoryId', function () {
+            var url = '@ViewBag.Url/' + 'Opportunities/';
+            GetProductList($('#CategoryId'), url);
+        });
+        $(document).on('click', ".CreatePerson", function () {
+            var companyId = $(this).attr("data-companyId");
+            var url = '@ViewBag.Url' + '/People/CreateInCompany?companyId=' + companyId;
+            console.log(url);
+            OpenModal(url, "#modal");
+        });
+
+
+    </script>
+}

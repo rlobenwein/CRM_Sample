@@ -1,0 +1,140 @@
+﻿@model RLBW_ERP.Models.CustomerModels.Person
+
+@{
+    ViewData["Title"] = "Detalhes do Contato ";
+}
+
+<hr />
+<div class="row container-fluid">
+    <div class="card-group">
+        <div class="card">
+            <div class="card-header">
+                <h5>@Html.DisplayFor(model => model.FullName)</h5>
+            </div>
+            <div class="card-body pre-scrollable h-100">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong> @Html.DisplayNameFor(model => model.LinkedinProfile):</strong> @Html.DisplayFor(model => model.LinkedinProfile)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.CellPhone):</strong> @Html.DisplayFor(model => model.CellPhone)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Email):</strong> @Html.DisplayFor(model => model.Email)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.HomePhone):</strong> @Html.DisplayFor(model => model.HomePhone)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.MainAddress): </strong>
+                        @Html.DisplayFor(model => model.MainAddress),
+                        @Html.DisplayFor(model => model.AddressNumber),
+                        @Html.DisplayFor(model => model.AddressComplement),
+                        @Html.DisplayFor(model => model.AddressDistrict),
+                        @Html.DisplayNameFor(model => model.PostalCode) @Html.DisplayFor(model => model.PostalCode),
+                        @Html.DisplayFor(model => model.City.Name)/
+                        @Html.DisplayFor(model => model.City.State.Acronym) -
+                        @Html.DisplayFor(model => model.City.State.Country.Name)
+                    </li>
+                    @if (Model.Status)
+                    {
+                        <li class="list-group-item">
+                            <strong> Situação:</strong> Contato Ativo
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            <strong> Situação:</strong> Contato Inativo
+                        </li>
+                    }
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.TaxpayerNumber):</strong> @Html.DisplayFor(model => model.TaxpayerNumber)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Birthday):</strong> @Html.DisplayFor(model => model.Birthday)
+                    </li>
+
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Notes):</strong> @Html.DisplayFor(model => model.Notes)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.LastUpdate):</strong> @Html.DisplayFor(model => model.LastUpdate)
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-group">
+        <div class="card">
+            <div class="card-header">
+                <h5>Atuações em empresas</h5>
+            </div>
+            <div class="card-body pre-scrollable h-100">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Empresa</th>
+                            <th>Departamento</th>
+                            <th>Cargo</th>
+                            <th>Celular Corp.</th>
+                            <th>Email Corp.</th>
+                            <th>Situação</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CompanyEmployees.OrderByDescending(c => c.Status).ThenBy(c => c.Person.FirstName).ThenBy(c => c.Person.LastName))
+                        {
+
+                            <tr>
+                                <td>
+                                    <a asp-controller="Companies" asp-action="Details" asp-route-id="@item.CompanyId"> @Html.DisplayFor(modelItem => item.Company.FriendlyName)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Department)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Position)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CellPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.WorkEmail)
+                                </td>
+                                @if (item.Status)
+                                {
+                                    <td>
+                                        Ativo
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        Inativo
+                                    </td>
+                                }
+                                <td>
+                                    <a class="btn btn-outline-secondary btn-sm" asp-action="Edit" asp-controller="CompanyEmployees" asp-route-personId="@item.PersonId" asp-route-companyId="@item.CompanyId">Editar</a>
+                                    <a class="btn btn-outline-secondary btn-sm" asp-action="Details" asp-controller="CompanyEmployees" asp-route-personId="@item.PersonId" asp-route-companyId="@item.CompanyId">Detalhes</a>
+                                    @if (@User.IsInRole("SuperAdmin"))
+                                    {
+                                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-controller="CompanyEmployees" asp-route-personId="@item.PersonId" asp-route-companyId="@item.CompanyId">Excluir</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="CompanyEmployees" asp-route-personId="@Model.Id" asp-action="Create" class="btn btn-sm btn-outline-secondary ">Adicionar</a>
+            </div>
+        </div>
+    </div>
+</div>

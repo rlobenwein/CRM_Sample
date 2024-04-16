@@ -1,0 +1,28 @@
+﻿@model IEnumerable<RLBW_ERP.Models.ViewModels.SalesFunnelViewModel>
+
+@{
+    ViewData["Title"] = "Funil de Vendas";
+}
+
+<h2>Funil de Vendas (Oportunidades ativas)</h2>
+
+<div class="row">
+    <div class="col">
+        <table class="table">
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string imageName = $"/img/SalesFunnel_{item.Id}_1172x130.png";
+                    <tr>
+                        <td class="col-2" id="tdSalesFunnel">
+                            <h3>@item.OpportunitiesCount (@item.OpportunitiesPercentage%)</h3>
+                        </td>
+                        <td id="tdSalesFunnel">
+                            <img src=@imageName height="65" width="586" id="SalesFunnel">
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<RLBW_ERP.Models.FinanceModels.TransactionSubcategory>
+
+@{
+    ViewData["Title"] = "Subcategorias (Transações)";
+}
+
+<h3>Subcategorias (Transações) <a class="btn btn-sm btn-outline-secondary" asp-action="Create">Cadastrar</a></h3>
+
+<p>
+    
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                    <a asp-controller="TransactionCategories" asp-action="Details" asp-route-id="@item.CategoryId">@Html.DisplayFor(modelItem => item.Category.Name)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,212 @@
+﻿@model RLBW_ERP.Models.CustomerModels.Person
+
+@{
+    ViewData["Title"] = "Adicionar Pessoa";
+}
+
+<h4>Cliente</h4>
+<hr />
+<form asp-action="Create">
+    <div class="row input-group mb-3">
+        <div class="col-6 col-md-4  mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.FirstName)</span>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.MiddleName)</span>
+                <input asp-for="MiddleName" class="form-control" />
+                <span asp-validation-for="MiddleName" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.LastName)</span>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.TaxpayerNumber)</span>
+                <input asp-for="TaxpayerNumber" class="form-control" />
+                <span asp-validation-for="TaxpayerNumber" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Birthday)</span>
+                <input asp-for="Birthday" class="form-control" />
+                <span asp-validation-for="Birthday" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.LinkedinProfile)</span>
+                <input asp-for="LinkedinProfile" class="form-control" />
+                <span asp-validation-for="LinkedinProfile" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.CellPhone)</span>
+                <input asp-for="CellPhone" class="form-control">
+                <span asp-validation-for="CellPhone" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.HomePhone)</span>
+                <input asp-for="HomePhone" class="form-control">
+                <span asp-validation-for="HomePhone" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Email)</span>
+                <input asp-for="Email" class="form-control">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row input-group mb-3">
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.Raw("País")</span>
+                <select id="Country" class="form-control" asp-items="@ViewBag.Countries">
+                    <option value="0">Selecione</option>
+                </select>
+                <a id="NewCountry" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+            </div>
+        </div>
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.Raw("Estado")</span>
+                <select id="State" class="form-control" asp-items="@ViewBag.States">
+                    <option value="0">Selecione</option>
+                </select>
+                <a id="NewState" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+            </div>
+        </div>
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.CityId)</span>
+                <select id="City" asp-for="CityId" class="form-control" asp-items="ViewBag.CityId">
+                    <option selected value="0">Selecione</option>
+                </select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+                <a id="NewCity" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+            </div>
+        </div>
+    </div>
+    <div class="row input-group mb-3">
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.MainAddress)</span>
+                <input asp-for="MainAddress" class="form-control" />
+                <span asp-validation-for="MainAddress" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.AddressNumber)</span>
+                <input asp-for="AddressNumber" class="form-control" />
+                <span asp-validation-for="AddressNumber" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.AddressComplement)</span>
+                <input asp-for="AddressComplement" class="form-control" />
+                <span asp-validation-for="AddressComplement" class="text-danger"></span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.PostalCode)</span>
+                <input asp-for="PostalCode" class="form-control" />
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.AddressDistrict)</span>
+                <input asp-for="AddressDistrict" class="form-control" />
+                <span asp-validation-for="AddressDistrict" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row input-group mb-3">
+        <div class="input-group mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Notes)</span>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
+            </div>
+            <div class="input-group mb-3">
+                <input type="submit" value="Salvar" class="btn btn-outline-secondary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="modal" class="modal fade" role="dialog" />
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var url = '@ViewBag.Url/' + 'Locations/';
+            $('#Country').on('change', function() {
+                var countryId = $(this).val();
+                GetStatesList(url, countryId)
+            });
+            $('#State').on('change', function() {
+                var stateId = $(this).val();
+                GetCitiesList(url, stateId);
+            });
+            $('#NewCountry').on('click', function() {
+                var url = '@ViewBag.Url' + '/Countries/Create/';
+                OpenModal(url, '#modal');
+            });
+            $('#NewState').on('click', function() {
+                var countryId = $('#Country').val();
+                var url = '@ViewBag.Url' + '/States/Create/' + countryId;
+                if (countryId == 0 || countryId == null) {
+                    alert("Selecione um país antes de clicar em Cadastrar");
+                } else {
+                    OpenModal(url, '#modal');
+                }
+            });
+            $('#NewCity').on('click', function() {
+                var stateId = $('#State').val();
+                var url = '@ViewBag.Url' + '/Cities/Create/' + stateId;
+                if (stateId == 0 || stateId == null) {
+                    alert("Selecione um estado antes de clicar em Cadastrar");
+                } else {
+                    OpenModal(url, '#modal');
+                }
+            });
+            $(function() {
+                $('#modal').on('shown.bs.modal', function() {
+                    $('#saveButton').click(function() {
+                        location.reload();
+                    });
+                });
+            });
+
+        })
+        $(document).on('submit', '.myForm', function(e) {
+            var countryId = $('#Country').val();
+            var stateId = $('#State').val();
+            var cityId = $('#City').val();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function(html) {
+                    //$('#Country').val(countryId);
+                    //$('#State').val(stateId);
+                    //$('#City').val(cityId);
+                }
+            });
+            e.preventDefault();
+        });
+    </script>
+
+}

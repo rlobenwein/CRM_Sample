@@ -1,0 +1,54 @@
+﻿@model IEnumerable<RLBW_ERP.Models.ViewModels.DoneActionsViewModel>
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Oportunidade</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Contato</th>
+            <th>Responsável</th>
+            <th style="max-width: 800px">Descrição</th>
+            <th>Pipeline</th>
+            <th>Situação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@item.OpportunityId">@Html.DisplayFor(modelItem => item.OpportunityId)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Company)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActionTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Person)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ErpUser.Name)
+                </td>
+                <td>
+                    @Html.Raw(item.Description.Replace(Environment.NewLine, "<br/>"))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PipelineStage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActionStatus)
+                </td>
+                <td>
+                    <a data-opportunityAction="@item.ActionId" class="btn btn-sm btn-outline-secondary EditAction">Editar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

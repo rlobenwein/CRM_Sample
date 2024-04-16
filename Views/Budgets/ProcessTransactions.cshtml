@@ -1,0 +1,102 @@
+﻿@model RLBW_ERP.Models.ViewModels.BudgetTransactionsViewModel
+
+@{
+    ViewData["Title"] = "Detalhes";
+    int i = 0;
+}
+
+<div>
+    <h4>Orçamento @Model.Year: transações previstas</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalBudget)
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.TotalBudget)
+        </dd>
+    </dl>
+</div>
+<hr />
+<form asp-action="ProcessTransactions" class="myForm" method="post" onsubmit="showLoader()">
+    <div>
+        <div id="loader" style="display: none;">
+@*             <img src="caminho/para/sua/imagem/loader.gif" alt="Carregando...">
+ *@            <p>Carregando...</p>
+        </div>
+        <h4>Transações</h4>
+        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-year="@Model.Year">Cancelar</a>
+
+        <input type="hidden" asp-for="Year" />
+
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                        <th>Subcategoria</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Transactions.OrderBy(x => x.Date))
+                    {
+                        <tr>
+                            <td>
+                                @item.Date.ToString("dd/MM/yyyy",System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"))
+                                <input asp-for="Transactions[i].Date" type="hidden" />
+                                <input asp-for="Transactions[i].IsExpense" type="hidden" />
+                                <input asp-for="Transactions[i].BudgetId" type="hidden" />
+                            </td>
+                            <td>
+                                @item.TransactionType.Subcategory.Category.Name
+                            </td>
+                            <td>
+                                @item.TransactionType.Subcategory.Name
+                            </td>
+                            <td>
+                                @item.TransactionType.Name
+                                <input type="hidden" asp-for="Transactions[i].TypeId" />
+                            </td>
+                            <td>
+                                @item.Description
+                                <input asp-for="Transactions[i].Description" type="hidden" />
+                            </td>
+                            <td>
+                                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.Value)
+                                <input asp-for="Transactions[i].Value" type="hidden" />
+                            </td>
+                        </tr>
+                        i++;
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-year="@Model.Year">Cancelar</a>
+    </div>
+</form>
+@section Scripts {
+    <script>
+        if (@ViewBag.ShowLoader ?? false) {
+            showLoader();
+        } else {
+            hideLoader();
+        }
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+    </script>
+}

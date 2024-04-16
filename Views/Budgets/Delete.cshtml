@@ -1,0 +1,118 @@
+﻿@model RLBW_ERP.Models.FinanceModels.Budget
+
+@{
+    ViewData["Title"] = "Excluir";
+}
+
+<div>
+    <h4 class="alert-danger">Excluir entrada do Orçamento @Model.Year?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionCategoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TransactionType.Subcategory.Category.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionSubcategoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TransactionType.Subcategory.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionTypeId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TransactionType.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalBudgeted)
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.TotalBudgeted)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Frequency)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Frequency)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalAmount)
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.TotalAmount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InitialMonth)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InitialMonth)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionDay)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TransactionDay)
+        </dd>
+        <dd class="col-sm-10">
+            <h5>Transações</h5>
+            <h5 class="alert-danger">As seguintes transações também serão excluídas. Esta ação não poderá ser desfeita</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                        <th>Subcategoria</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Transactions.OrderBy(x => x.Date))
+                    {
+                        <tr>
+                            <td>
+                                @item.Date.ToString("dd/MM/yyyy",System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"))
+                            </td>
+                            <td>
+                                @item.TransactionType.Subcategory.Category.Name
+                            </td>
+                            <td>
+                                @item.TransactionType.Subcategory.Name
+                            </td>
+                            <td>
+                                @item.TransactionType.Name
+                            </td>
+                            <td>
+                                @item.Description
+                            </td>
+                            <td>
+                                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.Value)
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </dd>
+    </dl>
+</div>
+<hr />
+
+<div>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Excluir" class="btn btn-danger" /> |
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar para a lista</a>
+    </form>
+
+</div>

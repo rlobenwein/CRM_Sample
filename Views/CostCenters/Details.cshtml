@@ -1,0 +1,107 @@
+﻿@model RLBW_ERP.Models.FinanceModels.CostCenter
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<div>
+    <h4>Detalhes do Centro de Custo: Oportunidade @Html.DisplayFor(model => model.Opportunity.Id)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Opportunity.Company.FriendlyName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Opportunity.Company.FriendlyName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResultValue)
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.ResultValue)
+        </dd>
+    </dl>
+    <hr />
+    <h5>
+        Transações <a asp-controller="TransactionDistributions" asp-action="Create" asp-route-costCenterId="@Model.Id" class="btn btn-sm btn-outline-secondary">Incluir</a>
+    </h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Categoria</th>
+                <th>Subcategoria</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Proporção</th>
+                <th>Valor Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TransactionsDistribution.OrderByDescending(x=>x.Transaction.Date))
+            {
+                <tr>
+                    <td>
+                        @item.Transaction.Date.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @item.Transaction.TransactionType.Subcategory.Category.Name
+                    </td>
+                    <td>
+                        @item.Transaction.TransactionType.Subcategory.Name
+                    </td>
+                    <td>
+                        @item.Transaction.TransactionType.Name
+                    </td>
+                    <td>
+                        @item.Transaction.Description
+                    </td>
+                    <td>
+                        @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.Transaction.Value)
+                    </td>
+                    <td>
+                        @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N1}", item.Proportion * 100)%
+                    </td>
+                    <td>
+                        @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.Proportion * item.Transaction.Value)
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar para a lista</a>
+</div>
+@* <div id="modal" class="modal fade" role="dialog" />
+ *@
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+
+        // $(document).on('click', '#includeTransacion', function () {
+        //     var costCenterId = $(this).attr("data-costCenterId");
+        //     var url = '@ViewBag.Url' + '/TransactionDistributions/Create?costCenterId=' + costCenterId;
+        //     OpenModal(url, "#modal");
+        // });
+    </script>
+}

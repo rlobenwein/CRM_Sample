@@ -1,0 +1,117 @@
+﻿@using RLBW_ERP.Common;
+@using RLBW_ERP.Models.FinanceModels;
+@model RLBW_ERP.Models.FinanceModels.PurchaseOrder
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>PurchaseOrder</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="PONumber" class="control-label"></label>
+                <input asp-for="PONumber" class="form-control" />
+                <span asp-validation-for="PONumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Contract" class="control-label"></label>
+                <input asp-for="Contract" class="form-control" />
+                <span asp-validation-for="Contract" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeliveryTime" class="control-label"></label>
+                <input asp-for="DeliveryTime" class="form-control" />
+                <span asp-validation-for="DeliveryTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="POStatus" class="control-label"></label>
+                <select asp-for="POStatus" class="form-control" asp-items="@Html.GetEnumSelectList<PurchaseOrder.Status>()"></select>
+                <span asp-validation-for="POStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Value" class="control-label"></label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Currency" class="control-label"></label>
+                <select asp-for="Currency" class="form-control" asp-items="@Html.GetEnumSelectList<Currency.Currencies>()"></select>
+                <span asp-validation-for="Currency" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExchangeRate" class="control-label"></label>
+                <input asp-for="ExchangeRate" class="form-control" locked />
+                <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValueBRL" class="control-label"></label>
+                <input asp-for="ValueBRL" class="form-control" />
+                <span asp-validation-for="ValueBRL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentTermId" class="control-label"></label>
+                <select asp-for="PaymentTermId" class="form-control" asp-items="ViewBag.PaymentTerm"></select>
+                <span asp-validation-for="PaymentTermId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <div class="form-group form-check">
+                    <input class="form-check-input" asp-for="DirectInvoicing" /> @Html.DisplayNameFor(model => model.DirectInvoicing)
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <textarea asp-for="Notes" class="form-control"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Director"))
+            {
+                <div class="form-group form-check">
+                    <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.OpportunityId)</span>
+                    <select asp-for="OpportunityId" class="form-control" asp-items="@ViewBag.OpportunityId"></select>
+                </div>
+                <div class="form-group form-check">
+                    <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.ProposalId)</span>
+                    <select asp-for="ProposalId" class="form-control" asp-items="@ViewBag.ProposalId"></select>
+                </div>
+            }
+            else
+            {
+                <div class="form-group form-check">
+                    <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.OpportunityId)</span>
+                    <select asp-for="OpportunityId" class="form-control" asp-items="@ViewBag.OpportunityId" readonly></select>
+                </div>
+                <div class="form-group form-check">
+                    <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.ProposalId)</span>
+                    <select asp-for="ProposalId" class="form-control" asp-items="@ViewBag.ProposalId" readonly></select>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar para a lista</a>
+</div>
+

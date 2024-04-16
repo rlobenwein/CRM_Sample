@@ -1,0 +1,138 @@
+﻿@using static RLBW_ERP.Models.SalesModels.Proposal
+@using static RLBW_ERP.Common.Currency
+@model RLBW_ERP.Models.SalesModels.Proposal
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" class="myForm" method="post">
+                <div class="modal-header">
+                    <div class="col">
+                        <div class="row">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+                            <h5>Editar Proposta @Html.DisplayFor(x=>x.OpportunityId)-@Html.DisplayFor(x=>x.Id)</h5>
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                        </div>
+                        <div class="row">
+                            @if (Model.Revision != null)
+                            {
+                                <h7>Proposta Revisada: @Model.Revision</h7>
+                            }
+                            else
+                            {
+                                <h7>Revisão 0 (Emissão inicial)</h7>
+                            }
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.Date)</span>
+                                <input asp-for="Date" class="form-control" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.ExpirationTime)</span>
+                                <input asp-for="ExpirationTime" class="form-control" />
+                                <span asp-validation-for="ExpirationTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.Currency)</span>
+                                <select asp-for="Currency" class="form-control" asp-items="@Html.GetEnumSelectList<Currencies>()"></select>
+                                <span asp-validation-for="Currency" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.BasePrice)</span>
+                                <input asp-for="BasePrice" class="form-control" id="BasePrice" readonly="@(!Model.ManualPrice)" />
+                                <span asp-validation-for="BasePrice" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.Discount)</span>
+                                <input asp-for="Discount" class="form-control" id="Discount" />
+                                <span asp-validation-for="Discount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.Price)</span>
+                                <input asp-for="Price" class="form-control" id="FinalPrice" disabled />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.DelireryTime)</span>
+                                <input asp-for="DelireryTime" class="form-control" />
+                                <span asp-validation-for="DelireryTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.Status)</span>
+                                <select asp-for="Status" class="form-control" asp-items="@Html.GetEnumSelectList<ProposalStatus>()"></select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.Notes)</span>
+                                <textarea asp-for="Notes" class="form-control"><</textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check">
+                                <input asp-for="ManualPrice" class="form-check-input" id="ManualPrice" />@Html.DisplayNameFor(modelItem => Model.ManualPrice)
+                                <span asp-validation-for="ManualPrice" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check">
+                                @if ((User.IsInRole("SuperAdmin") || User.IsInRole("Director")) && Model.Status == ProposalStatus.Old)
+                                {
+                                    <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.OpportunityId)</span>
+                                    <select asp-for="OpportunityId" class="form-control" asp-items="@ViewBag.OpportunityId"></select>
+                                }
+                                else
+                                {
+                                    <input type="hidden" asp-for="OpportunityId" />
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="modal-footer">
+                            <div class="form-group col">
+                                <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

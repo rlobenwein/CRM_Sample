@@ -1,0 +1,100 @@
+﻿@using static RLBW_ERP.Models.SalesModels.Opportunity
+@model RLBW_ERP.Models.SalesModels.Opportunity
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Oportunidade";
+}
+
+<div class="container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm())
+            {
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <h5>Cancelar Oportunidade @Model.Id</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.Date): </strong>@Model.Date.ToShortDateString()
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.CompanyId): </strong>@Model.Company.FriendlyName
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.CategoryId): </strong>@Model.Product.Category.CategoryName
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.ProductId): </strong>@Model.Product.Name
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.ErpUserId): </strong>@Model.Manager.Name
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.Status): </strong>@Html.DisplayFor(modelItem=>Model.Status)
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@Html.DisplayNameFor(modelItem => Model.Notes): </strong>@Model.Notes
+                        </li>
+                    </ul>
+                    <div class="row">
+                        <div class="col">
+                            <br>
+                            <h6>Outras informações:</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Ações concluídas: </strong> @Model.OpportunityActions.Where(x=>x.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Ações Planejadas: </strong> @Model.OpportunityActions.Where(x=>x.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Planned).Count()
+                                    <br>
+                                    <p>Nota: as ações planejadas serão canceladas</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Propostas: </strong> @Model.Proposals.Where(x=>x.OpportunityId==Model.Id).Count()
+                                    <br>
+                                    <p>Nota: as propostas abertas serão canceladas</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text">Motivo do Cancelamento</span>
+                        <textarea class="form-control" name="cancelReason" aria-label="cancelReason" rows="3" required></textarea>
+                        <hr />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Salvar" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary" />
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function validateForm() {
+            var cancelReason = document.getElementsByName("cancelReason")[0].value;
+
+            if (cancelReason.trim() === "") {
+                alert("Motivo do cancelamento pe obrigatório.");
+                return false; 
+            }
+
+            return true; 
+        }
+
+        document.querySelector("form").onsubmit = validateForm;
+    </script>
+                }

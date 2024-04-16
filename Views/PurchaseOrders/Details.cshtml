@@ -1,0 +1,119 @@
+﻿@model RLBW_ERP.Models.ViewModels.PurchaseOrderViewModel
+
+@{
+    ViewData["Title"] = $"Pedido {Model.PONumber} - Detalhes";
+}
+
+<div>
+    <h4>Pedido @Model.PONumber (Oportunidade @Model.Opportunity.Id: @Model.Opportunity.Company.FriendlyName)</h4>
+    <hr />
+    <div class="row input-group">
+        <div class="col-2 col-md-2 input-group mb-2">
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.Date)</strong>: @Html.DisplayFor(model => model.PO.Date)
+            </div>
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.ProposalId)</strong>: @Html.DisplayFor(model=>model.Opportunity.Id) - @Html.DisplayFor(model => model.PO.ProposalId)
+            </div>
+        </div>
+        <div class="col-2 col-md-2 input-group mb-2">
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.Contract)</strong>: @Html.DisplayFor(model => model.Contract)
+            </div>
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.DeliveryTime)</strong>: @Html.DisplayFor(model => model.DeliveryTime)
+            </div>
+        </div>
+        <div class="col-2 col-md-2 input-group mb-2">
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.Value)</strong>:  @Html.DisplayFor(model => model.Value)
+            </div>
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.Currency)</strong>:  @Html.DisplayFor(model => model.Currency)
+            </div>
+        </div>
+        <div class="col-2 col-md-2 input-group mb-2">
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.ExchangeRate)</strong>:  @Html.DisplayFor(model => model.ExchangeRate)
+            </div>
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.ValueBRL)</strong>:   @Html.DisplayFor(model => model.ValueBRL)
+            </div>
+        </div>
+        <div class="col-2 col-md-2 input-group mb-2">
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.POStatus)</strong>:  @Html.DisplayFor(model => model.POStatus)
+            </div>
+            <div class="input-group mb-2">
+                <strong>@Html.DisplayNameFor(model => model.DirectInvoicing)</strong>:
+                @if (Model.DirectInvoicing)
+                {
+                    <p>Sim</p>
+                }
+                else
+                {
+                    <p>Não</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row input-group">
+    <div class="input-group mb-2">
+        <strong>@Html.DisplayNameFor(model => model.PaymentTerms)</strong>:  @Html.DisplayFor(model => model.PaymentTerms.Name) (@Html.DisplayFor(model => model.PaymentTerms.Description))
+    </div>
+    <div class="input-group mb-2">
+        <strong>@Html.DisplayNameFor(model => model.Description)</strong>:  @Html.DisplayFor(model => model.Description)
+    </div>
+    <div class="input-group mb-2">
+        <strong>@Html.DisplayNameFor(model => model.Notes)</strong>:  @Html.DisplayFor(model => model.Notes)
+    </div>
+</div>
+<div class="row input-group">
+    <div class="col input-group mb-2">
+        <h5>Produtos</h5>
+        <div class="input-group mb-2">
+            @foreach (var product in Model.Products)
+            {
+                <div class="input-group mb-2">
+                    @product.Category.CategoryName @product.Product.Name
+                </div>
+                @foreach (var subproduct in product.Subproducts)
+                {
+                    <div class="input-group mb-2">
+                        @subproduct.SubProduct.Name
+                    </div>
+                    @foreach (var optional in subproduct.Optionals)
+                    {
+                        <div class="input-group mb-2">
+                            @optional.LicenseOptional.OptionalName
+                        </div>
+                    }
+                    @foreach (var parameter in subproduct.Params)
+                    {
+                        <div class="input-group mb-2">
+                            @parameter.LicenseNetworkType.NetworkType
+                            @parameter.Seats
+                            @parameter.LicenseTime.Time
+                            @parameter.TimeQuantity
+                            @parameter.CommercialLicense.Type
+                            @parameter.Cores
+                            @parameter.Tasks
+                            @parameter.Workbenchs
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>
+<div class="row input-group">
+    <div class="col input-group mb-2">
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.PO.Id">Editar</a>
+        <a class="btn btn-sm btn-outline-secondary" asp-controller="Opportunities" asp-action="Details" asp-route-id="@Model.Opportunity.Id">Ver Oportunidade @Model.Opportunity.Id</a>
+        @if (User.IsInRole("Director")||User.IsInRole("SuperAdmin"))
+        {
+            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@Model.PO.Id">Excluir pedido</a>            
+        }
+    </div>
+</div>

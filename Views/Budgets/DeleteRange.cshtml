@@ -1,0 +1,90 @@
+﻿@model RLBW_ERP.Models.ViewModels.BudgetIndexViewModel
+
+@{
+    ViewData["Title"] = "Excluir";
+}
+
+<div>
+    <h4 class="alert-danger">Excluir o Orçamento @Model.Year?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalBudget)
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", Model.TotalBudget)
+        </dd>
+    </dl>
+</div>
+<hr />
+<div>
+    <h4>Despesas previstas</h4>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Subcategoria</th>
+                    <th>Tipo</th>
+                    <th>Valor por período</th>
+                    <th>Periodicidade</th>
+                    <th>Total</th>
+                    <th>Dia</th>
+                    <th>Mês Inicial</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.BudgetItems)
+                {
+                    <tr>
+                        <td>
+                            @item.Description
+                        </td>
+                        <td>
+                            @item.TransactionType.Subcategory.Category.Name
+                        </td>
+                        <td>
+                            @item.TransactionType.Subcategory.Name
+                        </td>
+                        <td>
+                            @item.TransactionType.Name
+                        </td>
+                        <td>
+                            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalBudgeted)
+
+                        </td>
+                        <td>
+                            @item.Frequency
+                        </td>
+                        <td>
+                            @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalAmount)
+
+                        </td>
+                        <td>
+                            @item.TransactionDay
+                        </td>
+                        <td>
+                            @item.InitialMonth
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div>
+    <form asp-action="DeleteRange">
+        <input type="hidden" asp-for="Year" />
+        <input type="submit" value="Excluir" class="btn btn-danger" /> |
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar para a lista</a>
+    </form>
+
+</div>

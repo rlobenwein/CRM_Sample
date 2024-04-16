@@ -1,0 +1,56 @@
+﻿@model RLBW_ERP.Models.CustomerModels.CompanyEmployee
+
+@{
+    ViewData["Title"] = "Detalhes do Contato na Empresa";
+}
+
+<div class="row container-fluid h-100">
+    <div class="col-5">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5>Cliente: @Html.DisplayFor(model => model.Company.FriendlyName) - Contato: @Html.DisplayFor(model => model.Person.FullName)</h5>
+            </div>
+            <div class="card-body h-100">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Position):</strong> @Html.DisplayFor(model => model.Position)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.Department):</strong> @Html.DisplayFor(model => model.Department)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.CellPhone):</strong> @Html.DisplayFor(model => model.CellPhone)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.WorkEmail):</strong> @Html.DisplayFor(model => model.WorkEmail)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.WorkPhone):</strong> @Html.DisplayFor(model => model.WorkPhone)
+                    </li>
+                    @if (Model.Status)
+                    {
+                        <li class="list-group-item">
+                            <strong> Situação:</strong> Cliente Ativo
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            <strong> Situação:</strong> Cliente Inativo
+                        </li>
+                    }
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.InitialDate):</strong> @Html.DisplayFor(model => model.InitialDate)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>@Html.DisplayNameFor(model => model.EndDate):</strong> @Html.DisplayFor(model => model.EndDate)
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Edit" asp-route-CompanyId="@Model.CompanyId" asp-route-PersonId="@Model.PersonId" class="btn btn-sm btn-outline-secondary">Editar</a>
+                <a asp-action="Details" asp-controller="Companies" asp-route-id="@Model.CompanyId" class="btn btn-sm btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>

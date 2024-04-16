@@ -1,0 +1,45 @@
+﻿@model IEnumerable<RLBW_ERP.Models.ViewModels.MonthBalanceIndexViewModel>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year) / @item.Month.ToString("00")
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.PreviousBalanceIncurred)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalIncomeForecast)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalIncomeIncurred)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalExpenseForecast)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.TotalExpenseIncurred)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.ResultForecast)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.ResultIncurred)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.AccumulatedBalanceForecast)
+            </td>
+            <td>
+                @string.Format(System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"), "{0:N2}", item.AccumulatedBalanceIncurred)
+            </td>
+            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Director"))
+            {
+                <td>
+                    <a asp-action="Edit" asp-route-year="@item.Year" asp-route-month=@item.Month>Editar</a> |
+                    <a asp-action="Details" asp-route-year="@item.Year" asp-route-month=@item.Month>Detalhes</a> |
+                    <a asp-action="Delete" asp-route-year="@item.Year" asp-route-month=@item.Month>Excluir</a> |
+                </td>
+            }
+        </tr>
+    }

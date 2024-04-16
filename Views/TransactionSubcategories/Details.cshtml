@@ -1,0 +1,31 @@
+﻿@model RLBW_ERP.Models.FinanceModels.TransactionSubcategory
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4>Subcategoria: @Html.DisplayFor(model => model.Name)</h4>
+<p>@(Model.Category.IsExpense ? "Despesa" : "Receita") >  <a asp-controller="TransactionCategories" asp-action="Details" asp-route-id="@Model.CategoryId">@Html.DisplayFor(model => model.Category.Name)</a> > @Html.DisplayFor(model => model.Name)</p>
+<div>
+    @if (Model.Notes != null)
+    {
+        <h4> @Html.DisplayNameFor(model => model.Notes): @Html.DisplayFor(model => model.Notes)</h4>
+    }
+    <hr />
+    <h4>Tipos</h4>
+    @foreach (var type in Model.TransactionType)
+    {
+        <dl class="row">
+            <dd class="col-sm-2">
+                <a asp-controller="TransactionTypes" asp-action="Details" asp-route-id="@type.Id">
+                    @type.Name
+                </a>
+            </dd>
+        </dl>
+    }
+</div>
+<div>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+    <a class="btn btn-sm btn-outline-secondary" asp-controller="TransactionTypes" asp-action="Create" asp-route-id="@Model.Id" asp-route-isExpense="@(Model.Category.IsExpense)">Cadastrar Tipo</a>
+    <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Voltar</a>
+</div>

@@ -1,0 +1,46 @@
+﻿@model RLBW_ERP.Models.ViewModels.PersonDetailsViewModel
+
+<div class="container">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form asp-controller="People" asp-action="CreateInCompany" class="myForm" method="post">
+                <div class="modal-header">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Company.Id" />
+                    <input type="hidden" asp-for="Company.FriendlyName" />
+                    <h5>Novo contato para o cliente @Html.DisplayFor(modelItem => Model.Company.FriendlyName)</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <hr />
+                </div>
+                <div class="modal-body">
+                    <div class="row input-group mb-3">
+                        <div class="col-6 col-md-5 input-group mb-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Person.FirstName)</span>
+                                <input asp-for="Person.FirstName" class="form-control" />
+                                <span asp-validation-for="Person.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Person.MiddleName)</span>
+                                <input asp-for="Person.MiddleName" class="form-control" />
+                                <span asp-validation-for="Person.MiddleName" class="text-danger"></span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Person.LastName)</span>
+                                <input asp-for="Person.LastName" class="form-control" />
+                                <span asp-validation-for="Person.LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group col">
+                        <input type="submit" value="Salvar" class="btn btn-sm btn-outline-secondary" />
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
