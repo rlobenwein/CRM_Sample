@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RLBW_ERP.Common
+namespace CRM_Sample.Common
 {
     public class DateTimeFunctions
     {

@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
-@using RLBW_ERP.Common;
-@model RLBW_ERP.Models.ViewModels.StatisticsViewModel
+@using CRM_Sample.Common;
+@model CRM_Sample.Models.ViewModels.StatisticsViewModel
 
 @{
     ViewData["Title"] = "Início";
@@ -185,14 +185,14 @@
                             <td>
                                 @user.OpportunityActions.Where(o=>
                             o.Date.Date==DateTime.Today &&
-                            o.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                            o.Status==CRM_Sample.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
                             </td>
                             @for (var j = 1; j <= 7; j++)
                             {
                                 <td>
                                     @user.OpportunityActions.Where(o=>
                             o.Date.Date==DateTime.Today.AddDays(-j)&&
-                            o.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                            o.Status==CRM_Sample.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
 
                                 </td>
                             }
@@ -201,7 +201,7 @@
 
                                     @user.OpportunityActions.Where(o=>
                                 o.Date.Date>DateTime.Today.AddDays(-7)&&
-                                o.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                                o.Status==CRM_Sample.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
                                 </strong>
                             </td>
                         </tr>

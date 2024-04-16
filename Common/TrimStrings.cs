@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace RLBW_ERP.Common
+namespace CRM_Sample.Common
 {
     public class TrimStrings
     {

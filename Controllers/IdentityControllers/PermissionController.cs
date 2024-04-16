@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RLBW_ERP.Data.Constants;
-using RLBW_ERP.Data.Helpers;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Data.Constants;
+using CRM_Sample.Data.Helpers;
+using CRM_Sample.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Controllers.IdentityControllers
+namespace CRM_Sample.Controllers.IdentityControllers
 {
     [Authorize(Roles = "SuperAdmin")]
     public class PermissionController : Controller

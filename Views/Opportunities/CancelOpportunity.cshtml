@@ -1,5 +1,5 @@
-﻿@using static RLBW_ERP.Models.SalesModels.Opportunity
-@model RLBW_ERP.Models.SalesModels.Opportunity
+﻿@using static CRM_Sample.Models.SalesModels.Opportunity
+@model CRM_Sample.Models.SalesModels.Opportunity
 
 @{
     Layout = null;
@@ -48,10 +48,10 @@
                             <h6>Outras informações:</h6>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
-                                    <strong>Ações concluídas: </strong> @Model.OpportunityActions.Where(x=>x.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
+                                    <strong>Ações concluídas: </strong> @Model.OpportunityActions.Where(x=>x.Status==CRM_Sample.Models.SalesModels.OpportunityAction.ActionStatus.Done).Count()
                                 </li>
                                 <li class="list-group-item">
-                                    <strong>Ações Planejadas: </strong> @Model.OpportunityActions.Where(x=>x.Status==RLBW_ERP.Models.SalesModels.OpportunityAction.ActionStatus.Planned).Count()
+                                    <strong>Ações Planejadas: </strong> @Model.OpportunityActions.Where(x=>x.Status==CRM_Sample.Models.SalesModels.OpportunityAction.ActionStatus.Planned).Count()
                                     <br>
                                     <p>Nota: as ações planejadas serão canceladas</p>
                                 </li>

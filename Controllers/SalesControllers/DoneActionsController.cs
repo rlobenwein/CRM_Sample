@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Data;
+using CRM_Sample.Models.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using static RLBW_ERP.Models.SalesModels.OpportunityAction;
+using static CRM_Sample.Models.SalesModels.OpportunityAction;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public class DoneActionsController : Controller
     {

@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Models.ViewModels;
 using System;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Common
+namespace CRM_Sample.Common
 {
     public class ExchangeRateService : IExchangeRateService
     {

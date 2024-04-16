@@ -1,14 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using RLBW_ERP.Data;
+﻿using Microsoft.AspNetCore.Hosting;
 
-[assembly: HostingStartup(typeof(RLBW_ERP.Areas.Identity.IdentityHostingStartup))]
-namespace RLBW_ERP.Areas.Identity
+[assembly: HostingStartup(typeof(CRM_Sample.Areas.Identity.IdentityHostingStartup))]
+namespace CRM_Sample.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {

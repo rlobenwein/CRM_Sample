@@ -1,4 +1,4 @@
-﻿@model RLBW_ERP.Models.SalesModels.ProposalProduct
+﻿@model CRM_Sample.Models.SalesModels.ProposalProduct
 
 <div class="container">
     <div class="modal-dialog">
@@ -50,40 +50,8 @@
                             </div>
                         </div>
                     </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group mb-3">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <h6>
-                                            Subprodutos
-                                            <a class="btn btn-sm btn-outline-secondary SubproductListItemCreate" data-ProposalProductId="@Model.Id" data-ProductId="@Model.ProductId">Incluir</a>
-                                        </h6>
-                                        @if (Model.Subproducts.Count != 0)
-                                        {
-                                            <ul>
-                                                @foreach (var subProduct in Model.Subproducts)
-                                                {
-                                                    <li>
-                                                        <a href="#" class="SubproductListItemDetails" data-SubproductListId="@subProduct.Id">
-                                                            @Html.DisplayFor(modelItem=>subProduct.SubProduct.Name) -
-                                                            Qde: @Html.DisplayFor(modelItem=>subProduct.Quantity)
-                                                            (Valor: @Html.DisplayFor(modelItem=>subProduct.Price))
-                                                        </a>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        }
-
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <hr />
-
                 <div class="modal-footer">
                     <div class="form-group">
                         <a class="btn btn-sm btn-outline-secondary ProposalProductEdit" data-proposalProductId="@Model.Id">Editar</a>

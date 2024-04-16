@@ -1,5 +1,5 @@
-﻿@using static RLBW_ERP.Models.SalesModels.OpportunityAction
-@model PaginetedList<RLBW_ERP.Models.SalesModels.Opportunity>
+﻿@using static CRM_Sample.Models.SalesModels.OpportunityAction
+@model PaginetedList<CRM_Sample.Models.SalesModels.Opportunity>
 
 @{
     ViewData["Title"] = "Oportunidades";
@@ -182,7 +182,7 @@
                         <div class="dropdown-menu">
                             <div class="list-group">
                                 <a data-opportunityId="@item.Id" class="dropdown-item EditOpportunity">Editar</a>
-                                @if (item.Status != RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Canceled)
+                                @if (item.Status != CRM_Sample.Models.SalesModels.Opportunity.OpportunityStatus.Canceled)
                                 {
                                     <a data-opportunityId="@item.Id" class="dropdown-item CancelOpportunity">Cancelar</a>
                                 }

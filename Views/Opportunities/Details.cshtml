@@ -1,5 +1,5 @@
 ﻿@using System.Globalization;
-@model RLBW_ERP.Models.ViewModels.OpportunityDetailsViewModel
+@model CRM_Sample.Models.ViewModels.OpportunityDetailsViewModel
 
 @{
     ViewData["Title"] = "Op. " + Model.Id + " (" + Model.Company + ")";
@@ -46,20 +46,6 @@
                         }
                     </li>
                     <li class="list-group-item">
-                        <strong>@Html.DisplayNameFor(model => model.Value): </strong>@Html.DisplayFor(model => model.Value)
-                        @if (Model.CostCenterId != null)
-                        {
-                            <a class="btn btn-sm btn-outline-success" asp-controller="CostCenters" asp-action="Details" asp-route-id="@Model.CostCenterId">Ver Centro de Custo</a>
-                        }
-                        else
-                        {
-                            <form asp-action="Create" asp-controller="CostCenters" method="post" id="formCreate" asp-route-id="@Model.CostCenterId">
-                                <input type="hidden" asp-for="Id" />
-                                <input class="btn btn-sm btn-outline-secondary" type="submit" value="Criar Centro de Custo"/>
-                            </form>
-                        }
-                    </li>
-                    <li class="list-group-item">
                         <strong>@Html.DisplayNameFor(model => model.Manager):</strong> @Html.DisplayFor(model => model.Manager)
                     </li>
                     <li class="list-group-item">
@@ -81,7 +67,7 @@
                     <div class="dropdown-menu">
                         <div class="list-group">
                             <a data-Id="@Model.Id" class="dropdown-item EditOpportunity">Editar oportunidade @Model.Id</a>
-                            @if (Model.Status != RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Canceled.ToString())
+                            @if (Model.Status != CRM_Sample.Models.SalesModels.Opportunity.OpportunityStatus.Canceled.ToString())
                             {
                                 <a data-Id="@Model.Id" class="dropdown-item CancelOpportunity">Cancelar oportunidade @Model.Id</a>
                             }
@@ -135,29 +121,6 @@
             <div class="card-footer">
                 <a data-Id="@Model.Id" class="btn btn-sm btn-outline-secondary CreateProposal">Nova Proposta</a>
             </div>
-        </div>
-    </div>
-    <div class="col-2">
-        <div class="card h-100">
-            <div class="card-header">
-                <h5>
-                    Pedidos
-                </h5>
-            </div>
-            <div class="card-body pre-scrollable h-100" id="contact-card">
-                <ul class="list-group list-group-flush">
-                    @foreach (var po in Model.PurchaseOrders)
-                    {
-                        <li class="list-group-item">
-                            <strong>
-                                <a asp-action="Details" asp-controller="PurchaseOrders" asp-route-id="@po.Id">@Html.DisplayFor(x => po.Id) (@Html.DisplayFor(x => po.Status))</a>
-                            </strong>
-                        </li>
-
-                    }
-                </ul>
-            </div>
-
         </div>
     </div>
     <div class="col-2">

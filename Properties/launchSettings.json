@@ -8,7 +8,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
       }
     },
-    "RLBW_ERP": {
+    "CRM_Sample": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

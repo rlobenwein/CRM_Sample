@@ -1,24 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.SalesModels;
+using CRM_Sample.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.FinanceModels;
-using RLBW_ERP.Models.SalesModels;
-using RLBW_ERP.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public partial class OpportunitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private const string BIND_STRING = "Id,Date,Id,Id,Id,Value,Id,Status,Notes,OpportunityGroup,Title";
+        private const string BIND_STRING = "Id,Date,CompanyId,ProductId,ErpUserId,Value,PipelineId,Status,Notes,OpportunityGroup,Title";
 
         public OpportunitiesController(ApplicationDbContext context)
         {
@@ -218,28 +217,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
                                          OpportunityGroup = o.OpportunityGroup,
 
                                      }).AsNoTracking().FirstAsync();
-            var costCenter = _context.CostCenters.AsNoTracking().FirstOrDefault(x => x.OpportunityId == id);
-            opportunity.CostCenterId = costCenter?.Id;
-            //opportunity.Actions = await (from a in _context.OpportunityActions
-            //                             .Include(x => x.Person).Include(x => x.ErpUser).Include(x => x.ActionType)
-            //                             where a.OpportunityId == id
-            //                             orderby a.Status == OpportunityAction.ActionStatus.Planned ? 0 : 1, a.Date descending
-            //                             orderby a.Date descending
-            //                             select new OpportunityActionsViewModel
-            //                             {
-            //                                 Id = a.Id,
-            //                                 Date = a.Date,
-            //                                 ActionType = a.ActionType.Name,
-            //                                 Contact = a.Person.FullName,
-            //                                 Manager = a.ErpUser.Name,
-            //                                 Description = a.Description,
-            //                                 Pipeline = a.Pipeline.Stage,
-            //                                 Status = a.GetStatusDisplayName()
-            //                             }).AsNoTracking().ToListAsync();
-            //opportunity.Actions = opportunity.Actions
-            //    .OrderByDescending(x => x.Status == OpportunityAction.ActionStatus.Planned.ToString())
-            //    .ThenByDescending(x => x.Date)
-            //    .ToList();
+
             var plannedActions = await (from a in _context.OpportunityActions
                             .Include(x => x.Person).Include(x => x.ErpUser).Include(x => x.ActionType)
                                         where a.OpportunityId == id && a.Status == OpportunityAction.ActionStatus.Planned
@@ -272,13 +250,9 @@ namespace RLBW_ERP.Controllers.SalesControllers
                                           Status = a.GetStatusDisplayName()
                                       }).AsNoTracking().ToListAsync();
 
-            // Combine plannedActions e otherActions na ordem desejada
             var combinedActions = plannedActions.Concat(otherActions).ToList();
 
-            // Agora combinedActions contém a lista de ações ordenadas com Planned primeiro
             opportunity.Actions = combinedActions;
-
-
             opportunity.Proposals = await (from p in _context.Proposals
                                            where p.OpportunityId == id
                                            select new ProposalViewModel()
@@ -290,14 +264,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
                                                Currency = p.Currency.ToString()
                                            }).AsNoTracking().ToListAsync();
 
-
-            opportunity.PurchaseOrders = await (from po in _context.PurchaseOrders
-                                                where po.OpportunityId == id
-                                                select new PurchaseOrderSimpleViewModel()
-                                                {
-                                                    Id = po.Id,
-                                                    Status = po.POStatus.ToString()
-                                                }).AsNoTracking().ToListAsync();
 
             if (opportunity.OpportunityGroup != null)
             {
@@ -357,22 +323,18 @@ namespace RLBW_ERP.Controllers.SalesControllers
             if (companyId != null)
             {
                 ViewData["Id"] = new SelectList(_context.Companies.OrderBy(o => o.Id), "Id", "FriendlyName", companyId);
-
             }
             else
             {
                 ViewData["Id"] = new SelectList(_context.Companies.OrderBy(o => o.Id), "Id", "FriendlyName");
             }
-            ViewData["Id"] = new SelectList(_context.ErpUsers.Where(e => e.Active == true).OrderBy(e => e.Name), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Stage");
-            ViewData["Id"] = new SelectList(_context.Categories.OrderBy(p => p.CategoryName), "Id", "CategoryName");
-            ViewData["Id"] = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name");
 
             GetUrl url = new(HttpContext);
             ViewData["Url"] = url.GetCurrentUrl();
-
+            CreateViewData(true);
             return PartialView(opportunity);
         }
+
 
         // POST: Opportunities/Create
         [HttpPost]
@@ -394,10 +356,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
 
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunity.CompanyId);
-            ViewData["Id"] = new SelectList(_context.ErpUsers.Where(e => e.Active == true).OrderBy(e => e.Name), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Categories.OrderBy(p => p.CategoryName), "Id", "CategoryName");
-            ViewData["Id"] = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name");
+            CreateViewData(true, opportunity);
             return PartialView(opportunity);
         }
 
@@ -414,23 +373,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
             {
                 return NotFound();
             }
-            if (opportunity.ProductId != null)
-            {
-                ViewData["Id"] = new SelectList(_context.Categories.OrderBy(p => p.CategoryName), "Id", "CategoryName", opportunity.Product.CategoryId);
-                ViewData["Id"] = new SelectList(_context.Products.Where(p => p.CategoryId == opportunity.Product.CategoryId).ToList(), "Id", "Name", opportunity.ProductId);
-                ViewData["SelectedProduct"] = opportunity.ProductId;
-                opportunity.Title ??= _context.Categories.Find(opportunity.Product.CategoryId).CategoryName + " " + _context.Products.Find(opportunity.ProductId).Name;
-            }
-            else
-            {
-                ViewData["Id"] = new SelectList(_context.Categories.OrderBy(p => p.CategoryName), "Id", "CategoryName");
-                ViewData["Id"] = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name");
-                ViewData["SelectedProduct"] = null;
-            }
-
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunity.CompanyId);
-            ViewData["Id"] = new SelectList(_context.ErpUsers.OrderByDescending(x => x.Active).ThenBy(e => e.Name), "Id", "Name", opportunity.ErpUserId);
-
+            CreateViewData(false,opportunity);
             return PartialView(opportunity);
         }
 
@@ -462,18 +405,9 @@ namespace RLBW_ERP.Controllers.SalesControllers
                         throw;
                     }
                 }
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunity.CompanyId);
-            ViewData["Id"] = new SelectList(_context.ErpUsers, "Id", "Name", opportunity.ErpUserId);
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Stage", opportunity.Id);
-            ViewData["Id"] = new SelectList(_context.Products, "Id", "Name", opportunity.ProductId);
+            CreateViewData(false,opportunity);
             return View(opportunity);
         }
 
@@ -566,8 +500,8 @@ namespace RLBW_ERP.Controllers.SalesControllers
                 ViewData["NoOpportunities"] = false;
             }
             var company = await _context.Companies.FindAsync(companyId);
-            ViewData["Id"] = opportunity.Id;
-            ViewData["Id"] = company.FriendlyName;
+            ViewData["OpportunityId"] = opportunity.Id;
+            ViewData["CompanyId"] = company.FriendlyName;
             ViewData["CompanyOpportunities"] = companyOpportunities;
 
             return PartialView(companyOpportunities);
@@ -613,12 +547,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
 
             await _context.SaveChangesAsync();
 
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction("Details", "Opportunities", new { id = currentOpportunity.Id });
         }
 
@@ -631,9 +559,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
             {
                 opportunityToDuplicate.OpportunityGroup = _context.Opportunities.Max(o => o.OpportunityGroup) + 1;
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunityToDuplicate.CompanyId);
-            ViewData["Id"] = new SelectList(_context.ErpUsers.Where(e => e.Active == true).OrderBy(e => e.Name), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name");
+            CreateViewData(false, opportunityToDuplicate);
             return View(opportunityToDuplicate);
         }
 
@@ -670,18 +596,9 @@ namespace RLBW_ERP.Controllers.SalesControllers
                 }
                 await _context.SaveChangesAsync();
 
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Companies", new { id = opportunity.CompanyId });
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunity.CompanyId);
-            ViewData["Id"] = new SelectList(_context.ErpUsers, "Id", "Name", opportunity.ErpUserId);
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Stage", opportunity.Id);
-            ViewData["Id"] = new SelectList(_context.Products, "Id", "Name", opportunity.ProductId);
+            CreateViewData(false, opportunity);
             return View(opportunity);
         }
         public JsonResult GetProductList(int categoryId, int? selectedProduct)
@@ -755,5 +672,21 @@ namespace RLBW_ERP.Controllers.SalesControllers
 
             return RedirectToAction("Details", "Opportunities", new { id });
         }
+        private void CreateViewData(bool activeUsers, Opportunity opportunity = null)
+        {
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunity?.CompanyId);
+            ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Stage", opportunity?.PipelineId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(p => p.CategoryName), "Id", "Name", opportunity?.CategoryId);
+            ViewData["ProductId"] = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name", opportunity?.ProductId);
+            if (activeUsers)
+            {
+                ViewData["ErpUserId"] = new SelectList(_context.ErpUsers.Where(e => e.Active == true).OrderBy(e => e.Name), "Id", "Name");
+            }
+            else
+            {
+                ViewData["ErpUserId"] = new SelectList(_context.ErpUsers.OrderBy(e => e.Name), "Id", "Name");
+            }
+        }
+
     }
 }

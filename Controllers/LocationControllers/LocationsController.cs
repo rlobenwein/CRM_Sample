@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using RLBW_ERP.Data;
+using CRM_Sample.Data;
 
-namespace RLBW_ERP.Controllers.LocationControllers
+namespace CRM_Sample.Controllers.LocationControllers
 {
     public class LocationsController : Controller
     {

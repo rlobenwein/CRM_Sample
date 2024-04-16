@@ -1,4 +1,4 @@
-﻿namespace RLBW_ERP.Data.Constants
+﻿namespace CRM_Sample.Data.Constants
 {
     public enum Roles
     {

@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RLBW_ERP.Data;
-using RLBW_ERP.Data.Seeds;
+using CRM_Sample.Data;
+using CRM_Sample.Data.Seeds;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP
+namespace CRM_Sample
 {
     public class Program
     {

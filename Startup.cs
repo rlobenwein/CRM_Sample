@@ -8,13 +8,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
+using CRM_Sample.Common;
+using CRM_Sample.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace RLBW_ERP
+namespace CRM_Sample
 {
     public class Startup
     {

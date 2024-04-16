@@ -1,4 +1,4 @@
-﻿namespace RLBW_ERP.Common
+﻿namespace CRM_Sample.Common
 {
     public class Currency
     {

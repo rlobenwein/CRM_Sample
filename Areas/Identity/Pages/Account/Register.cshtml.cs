@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-namespace RLBW_ERP.Areas.Identity.Pages.Account
+namespace CRM_Sample.Areas.Identity.Pages.Account
 {
     [Authorize(Roles ="SuperAdmin")]
     public class RegisterModel : PageModel

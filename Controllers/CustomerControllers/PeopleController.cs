@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.CustomerModels;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.CustomerModels;
+using CRM_Sample.Models.ViewModels;
 
-namespace RLBW_ERP.Controllers.CustomerControllers
+namespace CRM_Sample.Controllers.CustomerControllers
 {
     public class PeopleController : Controller
     {

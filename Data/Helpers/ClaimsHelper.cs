@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Data.Helpers
+namespace CRM_Sample.Data.Helpers
 {
     public static class ClaimsHelper
     {

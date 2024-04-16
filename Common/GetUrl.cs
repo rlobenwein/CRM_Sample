@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 
 
-namespace RLBW_ERP.Common
+namespace CRM_Sample.Common
 {
     public class GetUrl
     {

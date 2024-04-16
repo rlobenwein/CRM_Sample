@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models;
-using RLBW_ERP.Models.LocationModels;
+using CRM_Sample.Data;
+using CRM_Sample.Models;
+using CRM_Sample.Models.LocationModels;
 
-namespace RLBW_ERP.Controllers.LocationControllers
+namespace CRM_Sample.Controllers.LocationControllers
 {
     public class CountriesController : Controller
     {

@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Data;
+using CRM_Sample.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static RLBW_ERP.Models.SalesModels.Opportunity;
+using static CRM_Sample.Models.SalesModels.Opportunity;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public class SalesIndicatorsController : Controller
     {

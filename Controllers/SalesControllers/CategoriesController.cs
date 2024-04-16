@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.SalesModels;
+using CRM_Sample.Data;
+using CRM_Sample.Models.SalesModels;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public class CategoriesController : Controller
     {

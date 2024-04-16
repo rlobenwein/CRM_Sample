@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RLBW_ERP.Data.Constants;
+using CRM_Sample.Data.Constants;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Data.Seeds
+namespace CRM_Sample.Data.Seeds
 {
     public static class DefaultRoles
     {

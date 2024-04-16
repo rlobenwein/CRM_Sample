@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RLBW_ERP.Data.Constants
+namespace CRM_Sample.Data.Constants
 {
     public static class Permissions
     {

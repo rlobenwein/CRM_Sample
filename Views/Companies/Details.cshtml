@@ -1,5 +1,5 @@
-﻿@using static RLBW_ERP.Models.SalesModels.OpportunityAction
-@model RLBW_ERP.Models.CustomerModels.Company
+﻿@using static CRM_Sample.Models.SalesModels.OpportunityAction
+@model CRM_Sample.Models.CustomerModels.Company
 
 @{
     ViewData["Title"] = Model.FriendlyName + " - Detalhes";
@@ -187,11 +187,11 @@
                     {
                         switch (item.Status)
                         {
-                            case RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Canceled:
-                            case RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Declined:
+                            case CRM_Sample.Models.SalesModels.Opportunity.OpportunityStatus.Canceled:
+                            case CRM_Sample.Models.SalesModels.Opportunity.OpportunityStatus.Declined:
                                 opportunityStatus = "OpportunityCanceled";
                                 break;
-                            case RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Sold:
+                            case CRM_Sample.Models.SalesModels.Opportunity.OpportunityStatus.Sold:
                                 opportunityStatus = "OpportunitySold";
                                 break;
                             default:
@@ -261,7 +261,7 @@
                                             <a data-opportunityId="@item.Id" class="dropdown-item EditOpportunity">Editar</a>
                                             <a asp-controller="Opportunities" asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">Detalhes</a>
                                             <div class="dropdown-divider"></div>
-                                            @if (item.Status == RLBW_ERP.Models.SalesModels.Opportunity.OpportunityStatus.Opened)
+                                            @if (item.Status == CRM_Sample.Models.SalesModels.Opportunity.OpportunityStatus.Opened)
                                             {
                                                 <button id="modalButton" data-opportunityId="@item.Id" class="dropdown-item Duplicate">Duplicar</button>
                                             }

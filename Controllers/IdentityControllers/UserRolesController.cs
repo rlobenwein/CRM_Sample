@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RLBW_ERP.Data;
-using RLBW_ERP.Data.Seeds;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Data;
+using CRM_Sample.Data.Seeds;
+using CRM_Sample.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Controllers.IdentityControllers
+namespace CRM_Sample.Controllers.IdentityControllers
 {
     [Authorize(Roles = "SuperAdmin")]
     public class UserRolesController : Controller

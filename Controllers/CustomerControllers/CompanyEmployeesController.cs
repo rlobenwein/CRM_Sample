@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.CustomerModels;
+using CRM_Sample.Data;
+using CRM_Sample.Models.CustomerModels;
 
-namespace RLBW_ERP.Controllers.CustomerControllers
+namespace CRM_Sample.Controllers.CustomerControllers
 {
     [Authorize]
     public class CompanyEmployeesController : Controller

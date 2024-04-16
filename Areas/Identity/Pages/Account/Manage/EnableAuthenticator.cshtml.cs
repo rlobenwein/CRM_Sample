@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace RLBW_ERP.Areas.Identity.Pages.Account.Manage
+namespace CRM_Sample.Areas.Identity.Pages.Account.Manage
 {
     public class EnableAuthenticatorModel : PageModel
     {
@@ -148,7 +148,7 @@ namespace RLBW_ERP.Areas.Identity.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("RLBW_ERP"),
+                _urlEncoder.Encode("CRM_Sample"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }

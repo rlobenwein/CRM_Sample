@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.CustomerModels;
+using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.CustomerModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Controllers.CustomerControllers
+namespace CRM_Sample.Controllers.CustomerControllers
 {
     [Authorize(Roles = "SuperAdmin,Commercial")]
     public class CompaniesController : Controller
@@ -137,7 +137,6 @@ namespace RLBW_ERP.Controllers.CustomerControllers
                     .ThenInclude(x => x.Proposals)
                 .Include(c => c.Opportunities)
                     .ThenInclude(c => c.Pipeline)
-                .Include(c => c.SoftwareCompanies)
                 .Include(c => c.Employees)
                     .ThenInclude(e => e.Person)
                 .FirstOrDefaultAsync(m => m.Id == id);

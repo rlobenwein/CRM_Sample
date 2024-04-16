@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace RLBW_ERP.Common
+namespace CRM_Sample.Common
 {
     public static class ImportOfx
     {

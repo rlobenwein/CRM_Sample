@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.SalesModels;
+using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.SalesModels;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public class ProposalsController : Controller
     {
@@ -192,15 +192,11 @@ namespace RLBW_ERP.Controllers.SalesControllers
                 if (proposal.Revision != null)
                 {
                     proposal.Products = await _context.ProposalProducts
-                        .Include(x => x.Subproducts)
-                            .ThenInclude(x => x.Optionals)
-                        .Include(x => x.Subproducts)
-                            .ThenInclude(x => x.Params)
                         .Where(x => x.ProposalId == proposal.Revision).ToListAsync();
                     ReviewProposal((int)proposal.Revision);
                 }
                 var calcPrices = new Prices(_cache);
-                Opportunity opportunity = await calcPrices.CalcOpportunityValue(proposal, _context, false);
+                Opportunity opportunity = await calcPrices.CalcOpportunityValueAsync(proposal, _context, false);
 
                 _context.Update(opportunity);
                 _context.Add(proposal);
@@ -268,24 +264,13 @@ namespace RLBW_ERP.Controllers.SalesControllers
                 proposal.Discount /= 100;
                 proposal.Products = await _context.ProposalProducts
                     .Include(x => x.Product)
-                    .Include(x => x.Subproducts)
-                        .ThenInclude(x => x.Params)
-                    .Include(x => x.Subproducts)
-                        .ThenInclude(x => x.Optionals)
                     .Where(x => x.ProposalId == proposal.Id)
                     .ToListAsync();
                 proposal.ExchangeRate = await calcPrices.GetExchangeRate(proposal.Date, proposal.Currency);
                 proposal = await calcPrices.SetProposalPricesAsync(proposal);
 
-
-                //Opportunity opportunity = await calcPrices.CalcOpportunityValue(proposal, _context, false);
-                //var checkProposal = opportunity.Proposals.FirstOrDefault(x=>x.Id==proposal.Id);
-                //var products=checkProposal.Products.Count;
-                //await TryUpdateModelAsync<Proposal>(proposal);
-
                 try
                 {
-                    //_context.Update(opportunity);
                     _context.Update(proposal);
 
                     await _context.SaveChangesAsync();
@@ -301,12 +286,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
                         throw;
                     }
                 }
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = proposal.OpportunityId });
             }
             ViewData["Id"] = new SelectList(_context.Opportunities, "Id", "Id", proposal.OpportunityId);
@@ -341,7 +320,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
         {
             var proposal = await _context.Proposals.FindAsync(id);
             var calcPrices = new Prices(_cache);
-            Opportunity opportunity = await calcPrices.CalcOpportunityValue(proposal, _context, true);
+            Opportunity opportunity = await calcPrices.CalcOpportunityValueAsync(proposal, _context, true);
             _context.Update(opportunity);
 
             _context.Proposals.Remove(proposal);

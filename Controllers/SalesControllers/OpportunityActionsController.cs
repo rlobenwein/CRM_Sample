@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.CustomerModels;
-using RLBW_ERP.Models.SalesModels;
-using RLBW_ERP.Models.ViewModels;
+using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.CustomerModels;
+using CRM_Sample.Models.SalesModels;
+using CRM_Sample.Models.ViewModels;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public class OpportunityActionsController : Controller
     {
@@ -687,7 +687,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
     }
 }
 
-namespace RLBW_ERP
+namespace CRM_Sample
 {
     public enum RecurrenceType
     {

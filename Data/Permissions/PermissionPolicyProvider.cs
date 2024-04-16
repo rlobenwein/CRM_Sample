@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Data.Permissions
+namespace CRM_Sample.Data.Permissions
 {
     internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {

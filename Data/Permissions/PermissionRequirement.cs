@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace RLBW_ERP.Data.Permissions
+namespace CRM_Sample.Data.Permissions
 {
     public class PermissionRequirement : IAuthorizationRequirement
     {

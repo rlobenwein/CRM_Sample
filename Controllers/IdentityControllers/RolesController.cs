@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Controllers.IdentityControllers
+namespace CRM_Sample.Controllers.IdentityControllers
 {
     [Authorize(Roles = "SuperAdmin")]
     public class RolesController : Controller

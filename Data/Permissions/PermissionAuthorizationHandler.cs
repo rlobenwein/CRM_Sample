@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using RLBW_ERP.Data.Permissions;
+using CRM_Sample.Data.Permissions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Data.Permissions
+namespace CRM_Sample.Data.Permissions
 {
     internal class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {

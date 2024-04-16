@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.CRMModels;
+using CRM_Sample.Data;
+using CRM_Sample.Models.CRMModels;
 
-namespace RLBW_ERP.Controllers.CRMControllers
+namespace CRM_Sample.Controllers.CRMControllers
 {
     public class ActionTypesController : Controller
     {

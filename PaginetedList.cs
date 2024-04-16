@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP
+namespace CRM_Sample
 {
     public class PaginetedList<T> : List<T>
     {

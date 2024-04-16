@@ -1,8 +1,8 @@
-﻿using RLBW_ERP.Models.ViewModels;
+﻿using CRM_Sample.Models.ViewModels;
 using System;
 using System.Threading.Tasks;
 
-namespace RLBW_ERP.Common
+namespace CRM_Sample.Common
 {
     public interface IExchangeRateService
     {

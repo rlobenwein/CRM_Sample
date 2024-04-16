@@ -3,7 +3,7 @@
 //using System.Linq.Dynamic.Core;
 //using System.Linq.Expressions;
 
-//namespace RLBW_ERP.Common
+//namespace CRM_Sample.Common
 //{
 //    public class RulesEngine
 //    {

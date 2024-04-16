@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using RLBW_ERP.Common;
-using RLBW_ERP.Data;
-using RLBW_ERP.Models.SalesModels;
+using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.SalesModels;
 
-namespace RLBW_ERP.Controllers.SalesControllers
+namespace CRM_Sample.Controllers.SalesControllers
 {
     public class ProposalProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IMemoryCache _cache;
-        private const string BIND_STRING = "Id,Id,Id,Id,BasePrice,Price,Discount,ManualPrice";
+        private const string BIND_STRING = "Id,ProposalId,CategoryId,ProductId,BasePrice,Price,Discount,ManualPrice";
 
         public ProposalProductsController(ApplicationDbContext context, IMemoryCache cache)
         {
@@ -36,8 +36,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
                     .Include(p => p.Category)
                     .Include(p => p.Product)
                     .Include(p => p.Proposal)
-                    .Include(p => p.Subproducts)
-                        .ThenInclude(x => x.SubProduct)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (proposalProduct == null)
@@ -57,14 +55,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
                 ProposalId = proposal.Id,
                 Discount = 0
             };
-            var net = _context.LicenseNetworkTypes.ToList();
-
-            List<Category> category = (from categories in _context.Categories
-                                       select categories).ToList();
-            category.Insert(0, new Category { Id = 0, CategoryName = "Selecione" });
-
-            ViewData["Id"] = new SelectList(category, "Id", "CategoryName");
-            ViewData["Id"] = new SelectList(_context.Proposals, "Id", "Id");
 
             return PartialView(proposalProduct);
         }
@@ -83,26 +73,9 @@ namespace RLBW_ERP.Controllers.SalesControllers
                 _context.Add(proposalProduct);
                 await _context.SaveChangesAsync();
 
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
-
-            List<Category> category = (from categories in _context.Categories
-                                       select categories).ToList();
-            category.Insert(0, new Category { Id = 0, CategoryName = "Selecione" });
-
-            ViewData["Id"] = Json(new SelectList(category, "Id", "CategoryName"));
-            ViewData["LicenseTimeId"] = new SelectList(_context.LicenseTimes, "LicenseTimeId", "Time");
-            ViewData["LicenseNetworkId"] = new SelectList(_context.LicenseNetworkTypes, "LicenseNetworkTypeId", "NetworkType");
-            ViewData["Id"] = new SelectList(_context.CommercialLicenses, "Id", "Type");
-            ViewData["Id"] = new SelectList(_context.Products, "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Proposals, "Id", "Id");
-            ViewData["SubproductId"] = new SelectList(_context.SubProducts, "Id", "Name");
+            CreateViewData(proposalProduct);
             return PartialView(proposalProduct);
         }
 
@@ -122,13 +95,7 @@ namespace RLBW_ERP.Controllers.SalesControllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "CategoryName");
-            ViewData["LicenseTimeId"] = new SelectList(_context.LicenseTimes, "LicenseTimeId", "Time");
-            ViewData["LicenseNetworkId"] = new SelectList(_context.LicenseNetworkTypes, "LicenseNetworkTypeId", "NetworkType");
-            ViewData["Id"] = new SelectList(_context.CommercialLicenses, "Id", "Type");
-            ViewData["Id"] = new SelectList(_context.Products, "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Proposals, "Id", "Id");
-            ViewData["SubproductId"] = new SelectList(_context.SubProducts, "Id", "Name");
+            CreateViewData(proposalProduct);
 
             proposalProduct.Discount *= 100;
             return PartialView(proposalProduct);
@@ -166,21 +133,9 @@ namespace RLBW_ERP.Controllers.SalesControllers
                         throw;
                     }
                 }
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "CategoryName");
-            ViewData["LicenseTimeId"] = new SelectList(_context.LicenseTimes, "LicenseTimeId", "Time");
-            ViewData["LicenseNetworkId"] = new SelectList(_context.LicenseNetworkTypes, "LicenseNetworkTypeId", "NetworkType");
-            ViewData["Id"] = new SelectList(_context.CommercialLicenses, "Id", "Type");
-            ViewData["Id"] = new SelectList(_context.Products, "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Proposals, "Id", "Id");
-            ViewData["SubproductId"] = new SelectList(_context.SubProducts, "Id", "Name");
+            CreateViewData(proposalProduct);
             return PartialView(proposalProduct);
         }
 
@@ -220,12 +175,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
             _context.ProposalProducts.Remove(proposalProduct);
             await _context.SaveChangesAsync();
 
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
         }
 
@@ -244,87 +193,6 @@ namespace RLBW_ERP.Controllers.SalesControllers
 
             return Json(new SelectList(productList, "Id", "Name"));
         }
-        public JsonResult GetSubProductList(int productId)
-        {
-            List<SubProduct> subProductList = (from subproducts in _context.SubProducts
-                                               where subproducts.ProductId == productId
-                                               select subproducts).ToList();
-
-            subProductList.Insert(0, new SubProduct { Id = 0, Name = "Selecione" });
-
-            return Json(new SelectList(subProductList, "Id", "Name"));
-        }
-        public JsonResult GetNetworkTypeList(string productName)
-        {
-            List<LicenseNetworkType> networkTypeList = new();
-            switch (productName)
-            {
-                case "QForm":
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 1, NetworkType = "Local" });
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 2, NetworkType = "Flutuante" });
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 3, NetworkType = "Cliente-Servidor" });
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 4, NetworkType = "Cloud" });
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 0, NetworkType = "Selecione" });
-                    break;
-                case "JMatPro":
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 2, NetworkType = "Flutuante" });
-                    break;
-                case "OmniCAD":
-                case "PamStamp":
-                case "Dante":
-                    networkTypeList.Insert(0, new LicenseNetworkType { LicenseNetworkTypeId = 1, NetworkType = "Local" });
-                    break;
-            }
-
-
-            return Json(new SelectList(networkTypeList, "LicenseNetworkTypeId", "NetworkType"));
-        }
-        public JsonResult GetLicenseTimeList(string productName)
-        {
-            List<LicenseTime> licenseTime = new();
-            switch (productName)
-            {
-                case "QForm":
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 1, Time = "Anual" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 2, Time = "Perpétua" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 3, Time = "Manutenção" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 4, Time = "Atualização" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 5, Time = "Cloud" });
-                    break;
-                case "JMatPro":
-                case "PamStamp":
-                case "Dante":
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 1, Time = "Anual" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 2, Time = "Perpétua" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 3, Time = "Manutenção" });
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 4, Time = "Atualização" });
-                    break;
-                case "OmniCAD":
-                    licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 1, Time = "Anual" });
-                    break;
-            }
-
-            licenseTime.Insert(0, new LicenseTime { LicenseTimeId = 0, Time = "Selecione" });
-
-            return Json(new SelectList(licenseTime, "LicenseTimeId", "Time"));
-        }
-        public JsonResult GetCommercialLicenseList(string productName)
-        {
-            List<CommercialLicense> commercialLicense = new();
-            commercialLicense.Insert(0, new CommercialLicense { Id = 1, Type = "Comercial" });
-
-            switch (productName)
-            {
-                case "QForm":
-                case "JMatPro":
-                    commercialLicense.Insert(0, new CommercialLicense { Id = 2, Type = "Acadêmica" });
-                    commercialLicense.Insert(0, new CommercialLicense { Id = 0, Type = "Selecione" });
-                    break;
-            }
-
-            return Json(new SelectList(commercialLicense, "Id", "Type"));
-        }
-
         public async Task<JsonResult> GetProposalProductItems(int opportunityProductId)
         {
             var proposalProduct = await _context.ProposalProducts
@@ -334,6 +202,13 @@ namespace RLBW_ERP.Controllers.SalesControllers
 
             return Json($"{category} {product}");
         }
+        private void CreateViewData(ProposalProduct proposalProduct=null)
+        {
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", proposalProduct?.CategoryId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", proposalProduct?.ProductId);
+            ViewData["ProposalId"] = new SelectList(_context.Proposals, "Id", "Id", proposalProduct?.ProposalId);
+        }
+
     }
 
 }
