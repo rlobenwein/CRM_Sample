@@ -1,6 +1,4 @@
-﻿
-
-function OpenModal(url, modalId) {
+﻿function OpenModal(url, modalId) {
     $(modalId).load(url, function () {
         $(modalId).modal();
     })
@@ -101,44 +99,65 @@ function DoneActionsFilter() {
         }
     });
 };
-function GetCountriesList(url) {
-    url += 'GetCountriesList';
-
-    $.getJSON(url, function (data) {
-        var items = '';
-        $('#Country').empty();
-        $.each(data, function (i, country) {
-            items += "<option value='" + country.value + "'>" + country.text + "</option>";
-        });
-        $('#Country').html(items);
+function getCountriesList(url) {
+    return new Promise((resolve, reject) => {
+        url += 'GetCountriesList';
+        $.getJSON(url, function (data) {
+            var items = '';
+            $('#Country').empty();
+            $.each(data, function (i, country) {
+                items += "<option value='" + country.value + "'>" + country.text + "</option>";
+            });
+            $('#Country').html(items);
+            resolve();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            reject(errorThrown);
+            console.log('errorThrown', errorThrown);
+        })
     });
 };
-function GetStatesList(url, countryId) {
-    url += 'GetStatesList?countryId=' + countryId;
-
-    $.getJSON(url, { CountryId: $('#Country').val() }, function (data) {
-        var items = '';
-        $('#State').empty();
-        $('#City').empty();
-        var cityOption = "<option value=''>Selecione um estado</option>";
-        $.each(data, function (i, state) {
-            items += "<option value='" + state.value + "'>" + state.text + "</option>";
-        });
-        $('#State').html(items);
-        $('#City').html(cityOption);
+function getStatesList(url, countryId) {
+    return new Promise((resolve, reject) => {
+        url += 'GetStatesList?countryId=' + countryId;
+        $.getJSON(url, { CountryId: $('#Country').val() }, function (data) {
+            var items = '';
+            $('#State').empty();
+            $('#City').empty();
+            var cityOption = "<option value=''>Selecione um estado</option>";
+            $.each(data, function (i, state) {
+                items += "<option value='" + state.value + "'>" + state.text + "</option>";
+            });
+            $('#State').html(items);
+            $('#City').html(cityOption);
+            resolve();
+        }).fail(function (errorThrown) {
+            reject(errorThrown);
+            console.error('Promisse error:', error);
+        })
+    });
+}
+function getCitiesList(url, stateId) {
+    return new Promise((resolve, reject) => {
+        url += 'GetCitiesList?stateId=' + stateId;
+        $.getJSON(url, { StateId: $('#State').val() }, function (data) {
+            var items = '';
+            $('#City').empty();
+            $.each(data, function (i, city) {
+                items += "<option value='" + city.value + "'>" + city.text + "</option>";
+            });
+            $('#City').html(items);
+            resolve();
+        }).fail(function (errorThrown) {
+            reject(errorThrown);
+            console.error('Promise error.', errorThrown);
+        }).done(() => {
+            console.log('Success');
+        })
     });
 };
-function GetCitiesList(url, stateId) {
-    url += 'GetCitiesList?stateId=' + stateId;
-
-    $.getJSON(url, { StateId: $('#State').val() }, function (data) {
-        var items = '';
-        $('#City').empty();
-        $.each(data, function (i, city) {
-            items += "<option value='" + city.value + "'>" + city.text + "</option>";
-        });
-        $('#City').html(items);
-    });
+function SaveLocationSelecion(countryId, stateId) {
+    sessionStorage.setItem('countryId', countryId);
+    sessionStorage.setItem('stateId', stateId);
 };
 function SavePlannedFilterParams(erpUserId, actionStatus, quantity, DateStart, DateEnd, searchString, currentFilter) {
     sessionStorage.setItem('erpUserIdPlanned', erpUserId);
@@ -162,8 +181,11 @@ function SaveDoneFilterParams(erpUserId, actionStatus, quantity, DateStart, Date
     sessionStorage.setItem('searchString', searchString);
     sessionStorage.setItem('currentFilter', currentFilter);
 };
+function RestoreLocationFromStorage() {
+    $('#stateId').val(sessionStorage.stateId ?? "");
+    $('#countryId').val(sessionStorage.countryId ?? "");
+};
 function RestorePlannedFilterFromStorage() {
-
     $('#DateStart').val(sessionStorage.DateStartPlanned ?? "");
     $('#DateEnd').val(sessionStorage.DateEndPlanned ?? "");
     $("#ErpUserSelect").val(sessionStorage.erpUserIdPlanned ?? 0);
