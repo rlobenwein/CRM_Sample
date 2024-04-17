@@ -53,7 +53,7 @@
                                     @Html.CheckBoxFor(x => x.OpportunitiesRelated[i].Checked, new { htmlAttributes = new { @class = "form-control" }})
                                 }
                                 <label class="control-label">@Html.DisplayFor(x => x.OpportunitiesRelated[i].Id)</label>
-                                (@Html.DisplayFor(x=>x.OpportunitiesRelated[i].Product.Category.CategoryName)
+                                (@Html.DisplayFor(x=>x.OpportunitiesRelated[i].Product.Category.Name)
                                 @Html.DisplayFor(x=>x.OpportunitiesRelated[i].Product.Name))
 
                                 @Html.HiddenFor(x => x.OpportunitiesRelated[i].Id)

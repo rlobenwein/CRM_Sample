@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CRM_Sample.Data;
+using CRM_Sample.Models.LocationModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CRM_Sample.Data;
-using CRM_Sample.Models;
-using CRM_Sample.Models.LocationModels;
+using Mono.TextTemplating;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Threading.Tasks;
+using State = CRM_Sample.Models.LocationModels.State;
 
 namespace CRM_Sample.Controllers.LocationControllers
 {
     public class CitiesController : Controller
     {
+        private const string BIND_STRING = "Id,Name,StateId";
         private readonly ApplicationDbContext _context;
-
         public CitiesController(ApplicationDbContext context)
         {
             _context = context;
@@ -34,10 +34,10 @@ namespace CRM_Sample.Controllers.LocationControllers
             {
                 return NotFound();
             }
-            ViewData["SelectedState"] = state.Name;
+            CreateViewData(state);
 
             var cities = _context.Cities
-                .Where(c => c.StateId == state.Id).OrderBy(s=>s.Name)
+                .Where(c => c.StateId == state.Id).OrderBy(s => s.Name)
                 .Include(s => s.State)
                 .ToList();
 
@@ -79,10 +79,7 @@ namespace CRM_Sample.Controllers.LocationControllers
             {
                 return NotFound();
             }
-            ViewData["SelectedCountry"] = country.Name;
-            ViewData["SelectedState"] = state.Name;
-            ViewData["Id"] = country.Id;
-            ViewData["Id"] = state.Id;
+            CreateViewData(state, country);
 
             return PartialView(city);
         }
@@ -90,32 +87,31 @@ namespace CRM_Sample.Controllers.LocationControllers
         // POST: Cities/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? id, [Bind("Id,IbgeCode,Name,AreaCode,Id")] City city)
+        public async Task<IActionResult> Create(int? id, [Bind(BIND_STRING)] City city)
         {
-            if (id==null || id!=city.StateId)
+            if (id == null || id != city.StateId)
             {
                 ModelState.AddModelError(string.Empty, "Ocorreu um erro");
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Index", "Countries");
             }
+            var state = await _context.States.FirstOrDefaultAsync(c => c.Id == id);
+            var newCity = new City()
+            {
+                Name = city.Name,
+                StateId = city.StateId,
+            };
             if (ModelState.IsValid)
             {
-                _context.Add(city);
+                _context.Add(newCity);
                 await _context.SaveChangesAsync();
+                CreateViewData(state);
                 return View();
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Ocorreu um erro");
             }
-
-            ViewData["Id"] = new SelectList(_context.States, "Id", "Acronym", city.StateId);
+            CreateViewData(state);
             return PartialView(city);
         }
 
@@ -132,16 +128,16 @@ namespace CRM_Sample.Controllers.LocationControllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.States, "Id", "Acronym", city.StateId);
+            var state = await _context.States.FindAsync(city.StateId);
+            var country = await _context.Countries.FindAsync(state.CountryId);
+            CreateViewData(state, country);
             return View(city);
         }
 
         // POST: Cities/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IbgeCode,Name,AreaCode,Id")] City city)
+        public async Task<IActionResult> Edit(int id, [Bind(BIND_STRING)] City city)
         {
             if (id != city.Id)
             {
@@ -166,16 +162,11 @@ namespace CRM_Sample.Controllers.LocationControllers
                         throw;
                     }
                 }
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.States, "Id", "Acronym", city.StateId);
+            var state = await _context.States.FindAsync(city.StateId);
+            var country = await _context.Countries.FindAsync(state.CountryId);
+            CreateViewData(state, country);
             return View(city);
         }
 
@@ -208,19 +199,17 @@ namespace CRM_Sample.Controllers.LocationControllers
             var city = await _context.Cities.FindAsync(id);
             _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 
         private bool CityExists(int id)
         {
             return _context.Cities.Any(e => e.Id == id);
+        }
+        private void CreateViewData(State state, Country country = null)
+        {
+            ViewData["SelectedCountry"] = country?.Name;
+            ViewData["SelectedState"] = state.Name;
         }
     }
 }

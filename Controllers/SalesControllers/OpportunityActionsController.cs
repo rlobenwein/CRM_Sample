@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using CRM.Common;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.RenderTree;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CRM_Sample.Common;
+﻿using CRM_Sample.Common;
 using CRM_Sample.Data;
 using CRM_Sample.Models.CustomerModels;
 using CRM_Sample.Models.SalesModels;
 using CRM_Sample.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CRM_Sample.Controllers.SalesControllers
 {
@@ -143,13 +140,6 @@ namespace CRM_Sample.Controllers.SalesControllers
                 }
                 _context.Add(opportunityAction);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
 
@@ -177,14 +167,14 @@ namespace CRM_Sample.Controllers.SalesControllers
                 return NotFound();
             }
 
-            var action = await _context.OpportunityActions.FindAsync(id);
-            if (action == null)
+            var opportunityAction = await _context.OpportunityActions.FindAsync(id);
+            if (opportunityAction == null)
             {
                 return NotFound();
             }
             var opportunity = await _context.Opportunities
                 .Include(o => o.Company)
-                .FirstOrDefaultAsync(o => o.Id == action.OpportunityId);
+                .FirstOrDefaultAsync(o => o.Id == opportunityAction.OpportunityId);
 
             var opportunities = await (from o in _context.Opportunities
                            .Where(x => x.CompanyId == opportunity.CompanyId)
@@ -193,13 +183,13 @@ namespace CRM_Sample.Controllers.SalesControllers
                                        {
                                            o.Id,
                                            o.Title,
-                                           o.Product.Category.CategoryName,
-                                           o.Product.Name,
-                                           DisplayField = string.Format("{0} ({1})", o.Id, o.Title ?? o.Product.Category.CategoryName + o.Product.Name)
+                                           Category = o.Product.Category.Name,
+                                           Product = o.Product.Name,
+                                           DisplayField = string.Format("{0} ({1})", o.Id, o.Title ?? o.Product.Category.Name + o.Product.Name)
                                        }).ToListAsync();
 
-            CreateViewDataSet(opportunity.CompanyId, action.OpportunityId, action);
-            return PartialView(action);
+            CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
+            return PartialView(opportunityAction);
         }
 
 
@@ -296,12 +286,12 @@ namespace CRM_Sample.Controllers.SalesControllers
         public async Task<IActionResult> Delay(int actionId, string days)
         {
             int daysToDelay = Convert.ToInt32(days);
-            var action = await _context.OpportunityActions.FindAsync(actionId);
+            var opportunityAction = await _context.OpportunityActions.FindAsync(actionId);
             var act = new DelayActionViewModel()
             {
                 ActionId = actionId,
                 Days = daysToDelay,
-                OldDate = action.Date,
+                OldDate = opportunityAction.Date,
                 NewDate = new DateTimeFunctions().GetNow().AddDays(daysToDelay)
             };
 
@@ -310,29 +300,22 @@ namespace CRM_Sample.Controllers.SalesControllers
         [HttpPost]
         public async Task<IActionResult> Delay(DelayActionViewModel model)
         {
-            var action = await _context.OpportunityActions.FindAsync(model.ActionId);
+            var opportunityAction = await _context.OpportunityActions.FindAsync(model.ActionId);
             TimeSpan ts = new(9, 0, 0);
-            action.Date = model.NewDate;
-            action.Date += ts;
+            opportunityAction.Date = model.NewDate;
+            opportunityAction.Date += ts;
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(action);
+                    _context.Update(opportunityAction);
                     await _context.SaveChangesAsync();
-
-                    var referer = Request.Headers["Referer"].ToString();
-                    if (referer != null)
-                    {
-                        return Redirect(referer);
-                    }
-
-                    return RedirectToAction("Details", "Opportunities", new { id = action.OpportunityId });
+                    return RedirectToAction("Details", "Opportunities", new { id = opportunityAction.OpportunityId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OpportunityActionsExists(action.Id))
+                    if (!OpportunityActionsExists(opportunityAction.Id))
                     {
                         return NotFound();
                     }
@@ -342,7 +325,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                     }
                 }
             }
-            return View(action);
+            return View(opportunityAction);
         }
 
 
@@ -354,58 +337,48 @@ namespace CRM_Sample.Controllers.SalesControllers
                 return NotFound();
             }
 
-            var action = await _context.OpportunityActions.FindAsync(id);
-            if (action == null)
+            var opportunityAction = await _context.OpportunityActions.FindAsync(id);
+            if (opportunityAction == null)
             {
                 return NotFound();
             }
-            action.Description = "";
-            var opportunity = await _context.Opportunities.Include(o => o.Company).FirstOrDefaultAsync(o => o.Id == action.OpportunityId);
+            opportunityAction.Description = "";
+            var opportunity = await _context.Opportunities.Include(o => o.Company).FirstOrDefaultAsync(o => o.Id == opportunityAction.OpportunityId);
 
-            CreateViewDataSet(opportunity.CompanyId, action.OpportunityId, action);
-            return PartialView(action);
+            CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
+            return PartialView(opportunityAction);
         }
 
         // POST: OpportunityActions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        public async Task<IActionResult> Copy([Bind(BIND_STRING)] OpportunityAction action)
-
+        public async Task<IActionResult> Copy([Bind(BIND_STRING)] OpportunityAction opportunityAction)
         {
-            TrimStrings.TrimStringsFunction(action);
-            if (action.PersonId == 0)
+            var newAction = new OpportunityAction()
             {
-                action.PersonId = null;
-            }
-            var opportunity = await _context.Opportunities
-                .Where(o => o.Id.Equals(action.OpportunityId))
-                .Include(o => o.OpportunityActions)
-                .Include(x => x.Proposals)
-                .FirstOrDefaultAsync();
+                Date = opportunityAction.Date,
+                ActionType = opportunityAction.ActionType,
+                ActionTypeId = opportunityAction.ActionTypeId,
+                Description = opportunityAction.Description,
+                ErpUserId = opportunityAction.ErpUserId,
+                OpportunityId = opportunityAction.OpportunityId,
+                PersonId = opportunityAction.PersonId == 0 ? null : opportunityAction.PersonId,
+                PipelineId = opportunityAction.PipelineId,
+                Status = opportunityAction.Status
+            };
+            TrimStrings.TrimStringsFunction(newAction);
 
-            if (opportunity.OpportunityActions.Count != 0)
-            {
-                UpdateOpportunity(action, opportunity);
-            }
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Add(action);
+                    _context.Add(newAction);
                     await _context.SaveChangesAsync();
-
-                    var referer = Request.Headers["Referer"].ToString();
-                    if (referer != null)
-                    {
-                        return Redirect(referer);
-                    }
-
-                    return RedirectToAction("Details", "Opportunities", new { id = action.OpportunityId });
+                    return RedirectToAction("Details", "Opportunities", new { id = newAction.OpportunityId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OpportunityActionsExists(action.Id))
+                    if (!OpportunityActionsExists(newAction.Id))
                     {
                         return NotFound();
                     }
@@ -415,8 +388,13 @@ namespace CRM_Sample.Controllers.SalesControllers
                     }
                 }
             }
-            CreateViewDataSet(opportunity.CompanyId, action.OpportunityId, action);
-            return View(action);
+            var opportunity = await _context.Opportunities
+                .Where(o => o.Id.Equals(opportunityAction.OpportunityId))
+                .Include(o => o.OpportunityActions)
+                .Include(x => x.Proposals)
+                .FirstOrDefaultAsync();
+            CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
+            return View(opportunityAction);
         }
 
         //GET
@@ -427,63 +405,56 @@ namespace CRM_Sample.Controllers.SalesControllers
                 return NotFound();
             }
 
-            var action = await _context.OpportunityActions.FindAsync(id);
-            if (action == null)
+            var opportunityAction = await _context.OpportunityActions.FindAsync(id);
+            if (opportunityAction == null)
             {
                 return NotFound();
             }
 
-            action.Description = "Aguardar retorno";
+            opportunityAction.Description = "Aguardar retorno";
             TimeSpan ts = new(9, 0, 0);
-            action.Date = _now.GetNow().AddDays(7);
-            action.Status = OpportunityAction.ActionStatus.Planned;
+            opportunityAction.Date = _now.GetNow().AddDays(7);
+            opportunityAction.Status = OpportunityAction.ActionStatus.Planned;
 
-            var opportunity = await _context.Opportunities.Include(o => o.Company).FirstOrDefaultAsync(o => o.Id == action.OpportunityId);
+            var opportunity = await _context.Opportunities.Include(o => o.Company).FirstOrDefaultAsync(o => o.Id == opportunityAction.OpportunityId);
 
-            CreateViewDataSet(opportunity.CompanyId, action.OpportunityId, action);
-            return PartialView(action);
+            CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
+            return PartialView(opportunityAction);
         }
 
         // POST: OpportunityActions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> WaitForReply([Bind(BIND_STRING)] OpportunityAction action)
+        public async Task<IActionResult> WaitForReply([Bind(BIND_STRING)] OpportunityAction opportunityAction)
 
         {
-            TrimStrings.TrimStringsFunction(action);
-            if (action.PersonId == 0)
+            TrimStrings.TrimStringsFunction(opportunityAction);
+            if (opportunityAction.PersonId == 0)
             {
-                action.PersonId = null;
+                opportunityAction.PersonId = null;
             }
             var opportunity = await _context.Opportunities
-                .Where(o => o.Id.Equals(action.OpportunityId))
+                .Where(o => o.Id.Equals(opportunityAction.OpportunityId))
                 .Include(o => o.OpportunityActions)
                 .Include(x => x.Proposals)
                 .FirstOrDefaultAsync();
             if (opportunity.OpportunityActions.Count != 0)
             {
-                UpdateOpportunity(action, opportunity);
+                UpdateOpportunity(opportunityAction, opportunity);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Add(action);
+                    _context.Add(opportunityAction);
                     await _context.SaveChangesAsync();
-
-                    var referer = Request.Headers["Referer"].ToString();
-                    if (referer != null)
-                    {
-                        return Redirect(referer);
-                    }
-
-                    return RedirectToAction("Details", "Opportunities", new { id = action.OpportunityId });
+                    return RedirectToAction("Details", "Opportunities", new { id = opportunityAction.OpportunityId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OpportunityActionsExists(action.Id))
+                    if (!OpportunityActionsExists(opportunityAction.Id))
                     {
                         return NotFound();
                     }
@@ -493,8 +464,8 @@ namespace CRM_Sample.Controllers.SalesControllers
                     }
                 }
             }
-            CreateViewDataSet(opportunity.CompanyId, action.OpportunityId, action);
-            return View(action);
+            CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
+            return View(opportunityAction);
         }
 
         // GET: OpportunityActions/Delete/5
@@ -529,13 +500,6 @@ namespace CRM_Sample.Controllers.SalesControllers
             var opportunityActions = await _context.OpportunityActions.FindAsync(id);
             _context.OpportunityActions.Remove(opportunityActions);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -548,7 +512,7 @@ namespace CRM_Sample.Controllers.SalesControllers
         public async Task<IActionResult> Duplicate(int opportunityId, int actionId)
         {
             var opportunity = await _context.Opportunities.FindAsync(opportunityId);
-            var action = await _context.OpportunityActions.FindAsync(actionId);
+            var opportunityAction = await _context.OpportunityActions.FindAsync(actionId);
 
             if (opportunity.OpportunityGroup == null)
             {
@@ -571,13 +535,13 @@ namespace CRM_Sample.Controllers.SalesControllers
             foreach (var item in opportunitiesRelated.OpportunitiesRelated)
             {
                 var opportunityActions = _context.OpportunityActions.Where(
-                    o => o.Date == action.Date &&
-                    o.Description == action.Description &&
+                    o => o.Date == opportunityAction.Date &&
+                    o.Description == opportunityAction.Description &&
                     o.OpportunityId == item.Id);
 
                 item.Checked = await _context.OpportunityActions.AnyAsync(
-                    o => o.Date == action.Date &&
-                    o.Description == action.Description &&
+                    o => o.Date == opportunityAction.Date &&
+                    o.Description == opportunityAction.Description &&
                     o.OpportunityId == item.Id);
 
                 System.Diagnostics.Debug.WriteLine(item.Id);
@@ -586,7 +550,7 @@ namespace CRM_Sample.Controllers.SalesControllers
 
 
             ViewData["Id"] = actionId;
-            CreateViewDataSet(opportunity.CompanyId, action.OpportunityId, action);
+            CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
             return PartialView(opportunitiesRelated);
         }
 
@@ -636,24 +600,17 @@ namespace CRM_Sample.Controllers.SalesControllers
                 TempData["msg"] = $"<script>alert('Ação copiada para {counter} oportunidades.');</script>";
 
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunityAction.OpportunityId });
             }
             CreateViewDataSet(opportunities.CompanyId, opportunities.Id, opportunityAction);
             return View(opportunityAction);
         }
-        private void CreateViewDataSet(int companyId, int? opportunityId, OpportunityAction action = null)
+        private void CreateViewDataSet(int companyId, int? opportunityId, OpportunityAction opportunityAction = null)
         {
-            ViewData["ActionTypeId"] = new SelectList(_context.ActionTypes, "Id", "Name", action?.ActionTypeId);
-            ViewData["ErpUserId"] = new SelectList(_context.ErpUsers.Where(e => e.Active == true).OrderBy(e => e.Name), "Id", "Name", action?.ErpUserId);
-            ViewData["PersonId"] = new SelectList(GetCompanyEmployees(companyId).OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", action?.PersonId);
-            ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Stage", action?.PipelineId);
+            ViewData["ActionTypeId"] = new SelectList(_context.ActionTypes, "Id", "Name", opportunityAction?.ActionTypeId);
+            ViewData["ErpUserId"] = new SelectList(_context.ErpUsers.Where(e => e.Active == true).OrderBy(e => e.Name), "Id", "Name", opportunityAction?.ErpUserId);
+            ViewData["PersonId"] = new SelectList(GetCompanyEmployees(companyId).OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", opportunityAction?.PersonId);
+            ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Stage", opportunityAction?.PipelineId);
             ViewData["OpportunityId"] = new SelectList(_context.Opportunities, "Id", "Id", opportunityId);
 
         }

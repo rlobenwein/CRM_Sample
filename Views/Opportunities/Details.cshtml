@@ -109,7 +109,7 @@
                         {
                             <li class="list-group-item">
                                 <strong>
-                                    <a href="#" class="stretched-link ProposalDetails" data-proposalId=@item.Id>Proposta @Html.DisplayFor(x => item.Id)-@Html.DisplayFor(x => item.Id)</a>
+                                    <a href="#" class="ProposalDetails" data-proposalId=@item.Id>Proposta @Html.DisplayFor(x => item.Id)-@Html.DisplayFor(x => Model.Id)</a>
                                 </strong>
                                 de @Html.DisplayFor(x => item.Date) (@Html.DisplayFor(x => item.Status)) - @Html.DisplayFor(x => item.Price) @Html.DisplayFor(x => item.Currency)
                                 @*(Produtos: @item.Products.Count)*@

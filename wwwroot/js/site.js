@@ -101,16 +101,31 @@ function DoneActionsFilter() {
         }
     });
 };
+function GetCountriesList(url) {
+    url += 'GetCountriesList';
+
+    $.getJSON(url, function (data) {
+        var items = '';
+        $('#Country').empty();
+        $.each(data, function (i, country) {
+            items += "<option value='" + country.value + "'>" + country.text + "</option>";
+        });
+        $('#Country').html(items);
+    });
+};
 function GetStatesList(url, countryId) {
     url += 'GetStatesList?countryId=' + countryId;
 
     $.getJSON(url, { CountryId: $('#Country').val() }, function (data) {
         var items = '';
         $('#State').empty();
+        $('#City').empty();
+        var cityOption = "<option value=''>Selecione um estado</option>";
         $.each(data, function (i, state) {
             items += "<option value='" + state.value + "'>" + state.text + "</option>";
         });
         $('#State').html(items);
+        $('#City').html(cityOption);
     });
 };
 function GetCitiesList(url, stateId) {

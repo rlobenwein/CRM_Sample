@@ -197,7 +197,7 @@ namespace CRM_Sample.Controllers.SalesControllers
         {
             var proposalProduct = await _context.ProposalProducts
                 .FirstOrDefaultAsync(o => o.ProposalId == opportunityProductId);
-            var category = proposalProduct.Product.Category.CategoryName;
+            var category = proposalProduct.Product.Category.Name;
             var product = proposalProduct.Product.Name;
 
             return Json($"{category} {product}");

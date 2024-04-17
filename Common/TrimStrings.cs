@@ -4,7 +4,7 @@ namespace CRM_Sample.Common
 {
     public class TrimStrings
     {
-        public static object TrimStringsFunction(object obj)
+        public static void TrimStringsFunction(object obj)
         {
             var stringProperties = obj.GetType().GetProperties()
               .Where(p => p.PropertyType == typeof(string) && p.GetValue(obj) != null && p.Name != "FullName");
@@ -15,7 +15,6 @@ namespace CRM_Sample.Common
                 stringProperty.SetValue(obj, currentValue.Trim(), null);
 
             }
-            return obj;
         }
     }
 }

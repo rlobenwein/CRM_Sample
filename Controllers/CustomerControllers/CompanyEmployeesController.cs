@@ -14,6 +14,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
     [Authorize]
     public class CompanyEmployeesController : Controller
     {
+        private const string BIND_STRING = "PersonIdId,CompanyId,Position,Department,InitialDate,EndDate,Status,WorkEmail,WorkPhone,CellPhone,Notes";
         private readonly ApplicationDbContext _context;
 
         public CompanyEmployeesController(ApplicationDbContext context)
@@ -72,12 +73,10 @@ namespace CRM_Sample.Controllers.CustomerControllers
         }
 
         // POST: Employees/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int? companyId,
-            [Bind("Id,Id,Position,Department,InitialDate,EndDate,Status,WorkEmail,WorkPhone,CellPhone,Notes")] CompanyEmployee companyEmployee)
+            [Bind(BIND_STRING)] CompanyEmployee companyEmployee)
         {
             if (companyId == null)
             {
@@ -92,13 +91,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                 companyEmployee.LastUpdate = DateTime.UtcNow;
                 _context.Add(companyEmployee);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Companies", new { id = companyEmployee.CompanyId });
             }
             ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
@@ -148,17 +140,10 @@ namespace CRM_Sample.Controllers.CustomerControllers
         }
 
         // POST: Employees/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Id,Position,Department,InitialDate,EndDate,Status,WorkEmail,WorkPhone,CellPhone,Notes")] CompanyEmployee companyEmployee)
+        public async Task<IActionResult> Edit([Bind(BIND_STRING)] CompanyEmployee companyEmployee)
         {
-            //if (companyId != companyEmployee.Id)
-            //{
-            //    return NotFound();
-            //}
-
             if (ModelState.IsValid)
             {
                 try
@@ -178,13 +163,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                         throw;
                     }
                 }
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Companies", new { id = companyEmployee.CompanyId });
             }
             ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
@@ -222,13 +200,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
             var companyEmployee = await _context.CompanyEmployees.FindAsync(id);
             _context.CompanyEmployees.Remove(companyEmployee);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction("Details", "Companies", new { id = companyEmployee.CompanyId });
         }
 

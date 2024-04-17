@@ -60,13 +60,6 @@ namespace CRM_Sample.Controllers.CRMControllers
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
@@ -116,13 +109,6 @@ namespace CRM_Sample.Controllers.CRMControllers
                         throw;
                     }
                 }
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
@@ -156,13 +142,6 @@ namespace CRM_Sample.Controllers.CRMControllers
             var user = await _context.ErpUsers.FindAsync(id);
             _context.ErpUsers.Remove(user);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 

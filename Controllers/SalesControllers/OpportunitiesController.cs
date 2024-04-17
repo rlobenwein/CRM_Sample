@@ -98,7 +98,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                 opportunities = opportunities.Where(a =>
                     a.Company.FriendlyName.Contains(searchstring, StringComparison.OrdinalIgnoreCase) ||
                     a.Title.Contains(searchstring, StringComparison.OrdinalIgnoreCase) ||
-                    a.Product.Category.CategoryName.Contains(searchstring, StringComparison.OrdinalIgnoreCase) ||
+                    a.Product.Category.Name.Contains(searchstring, StringComparison.OrdinalIgnoreCase) ||
                     a.Product.Name.Contains(searchstring, StringComparison.OrdinalIgnoreCase)
                     );
             }
@@ -207,7 +207,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                                          Date = o.Date.ToString("g"),
                                          Company = o.Company.FriendlyName,
                                          CompanyId = o.CompanyId,
-                                         Category = o.Product.Category.CategoryName,
+                                         Category = o.Product.Category.Name,
                                          Product = o.Product.Name,
                                          Manager = o.Manager.Name,
                                          Value = o.Value,
@@ -273,7 +273,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                                                           {
                                                               Id = o.Id,
                                                               Title = o.Title,
-                                                              Category = o.Product.Category.CategoryName
+                                                              Category = o.Product.Category.Name
                                                           }).AsNoTracking().ToListAsync();
             }
 
@@ -347,13 +347,6 @@ namespace CRM_Sample.Controllers.SalesControllers
             {
                 _context.Add(opportunity);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
             CreateViewData(true, opportunity);
@@ -443,13 +436,6 @@ namespace CRM_Sample.Controllers.SalesControllers
             var opportunity = await _context.Opportunities.FindAsync(id);
             _context.Opportunities.Remove(opportunity);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -663,20 +649,13 @@ namespace CRM_Sample.Controllers.SalesControllers
             _context.UpdateRange(proposals);
             opportunity.Status = Opportunity.OpportunityStatus.Canceled;
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction("Details", "Opportunities", new { id });
         }
         private void CreateViewData(bool activeUsers, Opportunity opportunity = null)
         {
             ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "FriendlyName", opportunity?.CompanyId);
             ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Stage", opportunity?.PipelineId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories.OrderBy(p => p.CategoryName), "Id", "Name", opportunity?.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", opportunity?.Product.CategoryId);
             ViewData["ProductId"] = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name", opportunity?.ProductId);
             if (activeUsers)
             {

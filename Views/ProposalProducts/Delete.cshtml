@@ -7,7 +7,7 @@
                 <div class="modal-header">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
-                    <h5 class="text-danger">Excluir produto <strong>@Model.Category.CategoryName @Model.Product.Name</strong> da proposta @Model.ProposalId?</h5>
+                    <h5 class="text-danger">Excluir produto <strong>@Model.Category.Name @Model.Product.Name</strong> da proposta @Model.ProposalId?</h5>
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                     <hr />
                 </div>
@@ -17,7 +17,7 @@
                             @Html.DisplayNameFor(model => model.Category)
                         </dt>
                         <dd class = "col-sm-10">
-                            @Html.DisplayFor(model => model.Category.CategoryName)
+                            @Html.DisplayFor(model => model.Category.Name)
                         </dd class>
                         <dt class = "col-sm-2">
                             @Html.DisplayNameFor(model => model.Product)

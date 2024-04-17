@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
-using static CRM_Sample.Common.Currency;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using static CRM_Sample.Common.Currency;
 
 namespace CRM_Sample.Models.SalesModels
 {

@@ -48,8 +48,6 @@
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Freezed">Congeladas</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Canceled">Canceladas</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Index" asp-route-status="Lost">Perdidas</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Opportunities" asp-action="Create">Cadastrar</a></li>
                             </ul>
                         </li>
                         <li class="nav-item btn-group">
@@ -76,8 +74,6 @@
                                 <li><strong><a class="nav-link text-dark" asp-area="" asp-controller="PlannedActions" asp-action="Index">Lista de Tarefas</a></strong></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Proposals" asp-action="Index">Propostas</a></li>
-                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PurchaseOrders" asp-action="Index">Pedidos</a></li>
-                                <li><a class="nav-link text-dark" asp-area="" asp-controller="PaymentTerms" asp-action="Index">Condições de Pagamento</a></li>
                                 <li><a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Lista de Países</a></li>
                             </ul>
                         </li>
@@ -87,17 +83,12 @@
                             <li class="nav-item btn-group">
                                 <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Adm Comercial<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="nav-link text-dark" asp-controller="Pipelines" asp-action="Index">Estágios Pipeline</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="Softwares" asp-action="Index">Software</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="Fields" asp-action="Index">Campos de Atuação</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="Categories" asp-action="Index">Categorias</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="ErpUsers" asp-action="Index">Responsáveis</a></li>
                                     <li><a class="nav-link text-dark" asp-controller="ActionTypes" asp-action="Index">Tipo de Ação</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Pipelines" asp-action="Index">Estágios Pipeline</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="ErpUsers" asp-action="Index">Responsáveis</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Categories" asp-action="Index">Categorias</a></li>
                                     <li><a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Produtos</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="SubProducts" asp-action="Index">SubProdutos</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="LicenseTimes" asp-action="Index">Tempo de Licença</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="LicenseNetworkTypes" asp-action="Index">Licenças de Rede</a></li>
-                                    <li><a class="nav-link text-dark" asp-controller="LicenseOptionals" asp-action="Index">Opcionais</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item btn-group">
@@ -105,22 +96,6 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Permissões</a></li>
                                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Usuários</a></li>
-                                </ul>
-                            </li>
-                        }
-                        @if (User.IsInRole("SuperAdmin"))
-                        {
-                            <li class="nav-item btn-group">
-                                <a href="#" class="dropdown-toggle nav-item nav-link text-dark" data-toggle="dropdown">Financeiro<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="MonthBalances" asp-action="Index">Balanços Mensais</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index" asp-route-isIncurredStr="true">Diário</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Budgets" asp-action="Index">Orçamento</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionDistributions" asp-action="Index">Distribuição das Transações</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionCategories" asp-action="Index">Categorias (transações)</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionSubcategories" asp-action="Index">Subcategorias (transações)</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="TransactionTypes" asp-action="Index">Tipos (transações)</a></li>
-                                    <li><a class="nav-link text-dark" asp-area="" asp-controller="PaymentAccounts" asp-action="Index">Contas de pagamento</a></li>
                                 </ul>
                             </li>
                         }

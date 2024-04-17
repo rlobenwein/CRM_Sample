@@ -13,6 +13,16 @@ namespace CRM_Sample.Controllers.LocationControllers
             _context = context;
         }
 
+        public JsonResult GetCountriesList()
+        {
+            var countriesList = (from countries in _context.Countries
+                              orderby countries.Name
+                              select countries).ToList();
+            countriesList.Insert(0, new Models.LocationModels.Country { Id = 0, Name = "Selecione" });
+
+            return Json(new SelectList(countriesList, "Id", "Name"));
+        }
+
         public JsonResult GetStatesList(int countryId)
         {
             var statesList = (from states in _context.States

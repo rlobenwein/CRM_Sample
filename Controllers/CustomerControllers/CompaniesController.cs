@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CRM_Sample.Common;
+﻿using CRM_Sample.Common;
 using CRM_Sample.Data;
 using CRM_Sample.Models.CustomerModels;
+using CRM_Sample.Models.LocationModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,8 +25,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     "AddressDistrict," +
                     "PostalCode," +
                     "CityId," +
-                    "Id," +
-                    "CountryId," +
                     "CompanyPhone," +
                     "CompanyEmail," +
                     "FinanceEmail," +
@@ -144,9 +142,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
             {
                 return NotFound();
             }
-            GetUrl url = new(HttpContext);
-            ViewData["Url"] = url.GetCurrentUrl();
-
+            CreateViewData();
             return View(company);
         }
 
@@ -155,15 +151,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
         {
             Company company = new() { Status = true };
 
-            ViewData["Id"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
-
-            GetUrl url = new(HttpContext);
-            ViewData["Url"] = url.GetCurrentUrl();
-
-            ViewData["States"] = new SelectList(_context.States.Include(s => s.Country).OrderBy(s => s.Name).AsEnumerable(), "Id", "Name");
-            ViewData["Countries"] = new SelectList(_context.Countries.OrderBy(c => c.Name).AsEnumerable(), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Id");
-            ViewData["Status"] = true;
+            CreateViewData();
             return View(company);
         }
 
@@ -185,13 +173,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     company.LastUpdate = DateTime.Now;
                     _context.Add(company);
                     await _context.SaveChangesAsync();
-
-                    var referer = Request.Headers["Referer"].ToString();
-                    if (referer != null)
-                    {
-                        return Redirect(referer);
-                    }
-
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -210,7 +191,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
                          "entre em contato com o Administrador do Sistema");
                 }
             }
-            ViewData["Id"] = new SelectList(_context.Cities, "Id", "Name", company.CityId);
+            CreateViewData();
             return View(company);
         }
 
@@ -227,15 +208,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
             {
                 return NotFound();
             }
-
-            GetUrl url = new(HttpContext);
-            ViewData["Url"] = url.GetCurrentUrl();
-
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Id");
-            ViewData["Status"] = true;
-
-            ViewData["Id"] = new SelectList(_context.Cities, "Id", "Name", company.CityId);
-
+            CreateViewData();
             return View(company);
         }
 
@@ -254,12 +227,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     "Tente novamente, se o erro persistir, " +
                     "entre em contato com o Administrador do Sistema");
 
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             TrimStrings.TrimStringsFunction(company);
@@ -271,13 +238,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     company.LastUpdate = DateTime.Now;
                     _context.Update(company);
                     await _context.SaveChangesAsync();
-
-                    var referer = Request.Headers["Referer"].ToString();
-                    if (referer != null)
-                    {
-                        return Redirect(referer);
-                    }
-
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException)
@@ -287,12 +247,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     "entre em contato com o Administrador do Sistema");
                 }
             }
-
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Id");
-            ViewData["Status"] = true;
-
-            ViewData["Id"] = new SelectList(_context.Cities, "Id", "Name", company.CityId);
-
+            CreateViewData();
             return View(company);
         }
 
@@ -327,16 +282,15 @@ namespace CRM_Sample.Controllers.CustomerControllers
             var company = await _context.Companies.FindAsync(id);
             _context.Companies.Remove(company);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
-
+        private void CreateViewData(State state = null)
+        {
+            GetUrl url = new(HttpContext);
+            ViewData["Url"] = url.GetCurrentUrl();
+            ViewData["SelectedCountry"] = state?.CountryId;
+            ViewData["SelectedState"] = state?.Id;
+        }
         private bool CompanyExists(int id)
         {
             return _context.Companies.Any(e => e.Id == id);

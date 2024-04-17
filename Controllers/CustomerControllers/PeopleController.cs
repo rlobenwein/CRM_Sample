@@ -15,8 +15,8 @@ namespace CRM_Sample.Controllers.CustomerControllers
 {
     public class PeopleController : Controller
     {
+        private const string BIND_STRING = "Id, FirstName, MiddleName, LastName, TaxpayerNumber, Birthday, LinkedinProfile, CellPhone, HomePhone, Email, MainAddress, AddressNumber, AddressComplement, PostalCode, AddressDistrict, CityId, Notes, Status";
         private readonly ApplicationDbContext _context;
-
         public PeopleController(ApplicationDbContext context)
         {
             _context = context;
@@ -194,7 +194,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
         // POST: Customers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName, MiddleName, LastName, TaxpayerNumber, Birthday, LinkedinProfile, CellPhone, HomePhone, Email, MainAddress, AddressNumber, AddressComplement, PostalCode, AddressDistrict, Id, Id, Id, Notes, Status")] Person person)
+        public async Task<IActionResult> Create([Bind(BIND_STRING)] Person person)
         {
             TrimStrings.TrimStringsFunction(person);
             if (person.CityId == 0)
@@ -207,13 +207,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                 person.LastUpdate = DateTime.Now;
                 _context.Add(person);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
@@ -222,10 +215,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateInCompany(
-            [Bind("FirstName, MiddleName, LastName, TaxpayerNumber, Birthday," +
-                "LinkedinProfile, CellPhone, HomePhone, Email, MainAddress, AddressNumber, " +
-                "AddressComplement, PostalCode, AddressDistrict, Id, Id, Id, " +
-                "Notes, Status")] Person person,[Bind("Id, FriendlyName")] Company company)
+            [Bind(BIND_STRING)] Person person,[Bind("Id, FriendlyName")] Company company)
         {
 
             TrimStrings.TrimStringsFunction(person);
@@ -248,13 +238,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                 person.LastUpdate = new DateTimeFunctions().GetNow();
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Companies", new {id=company.Id});
             }
             return PartialView(new PersonDetailsViewModel
@@ -290,11 +273,9 @@ namespace CRM_Sample.Controllers.CustomerControllers
         }
 
         // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName, MiddleName, LastName, TaxpayerNumber, Birthday, LinkedinProfile, CellPhone, HomePhone, Email, MainAddress, AddressNumber, AddressComplement, PostalCode, AddressDistrict, Id, Id, Id, Notes, Status")] Person person)
+        public async Task<IActionResult> Edit(int id, [Bind(BIND_STRING)] Person person)
         {
             TrimStrings.TrimStringsFunction(person);
 
@@ -328,13 +309,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                              "entre em contato com o Administrador do Sistema");
                     }
                 }
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
@@ -369,13 +343,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
             var person = await _context.People.FindAsync(id);
             _context.People.Remove(person);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 

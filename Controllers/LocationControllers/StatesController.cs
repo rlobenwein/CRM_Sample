@@ -14,8 +14,8 @@ namespace CRM_Sample.Controllers.LocationControllers
 {
     public class StatesController : Controller
     {
+        private const string BIND_STRING = "Id,Name,Acronym,CountryId";
         private readonly ApplicationDbContext _context;
-
         public StatesController(ApplicationDbContext context)
         {
             _context = context;
@@ -93,18 +93,11 @@ namespace CRM_Sample.Controllers.LocationControllers
         // POST: States/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? id, [Bind("Id,Name,Acronym,Id")] State state)
+        public async Task<IActionResult> Create(int? id, [Bind(BIND_STRING)] State state)
         {
-            var referer = Request.Headers["Referer"].ToString();
             if (id == null || id != state.CountryId)
             {
                 ModelState.AddModelError(string.Empty, "Ocorreu um erro");
-
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Index", "Countries");
             }
             else
@@ -122,12 +115,6 @@ namespace CRM_Sample.Controllers.LocationControllers
                 ModelState.AddModelError(string.Empty, "Ocorreu um erro");
             }
             ViewData["Id"] = new SelectList(_context.Countries, "Id", "Iso3", state.Id);
-
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction("Index", "Countries");
         }
 
@@ -157,7 +144,7 @@ namespace CRM_Sample.Controllers.LocationControllers
         // POST: States/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Acronym,Id")] State state)
+        public async Task<IActionResult> Edit(int id, [Bind(BIND_STRING)] State state)
         {
             if (id != state.Id)
             {
@@ -182,12 +169,6 @@ namespace CRM_Sample.Controllers.LocationControllers
                         throw;
                     }
                 }
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Id"] = new SelectList(_context.Countries, "Id", "Iso3", state.Id);
@@ -223,12 +204,6 @@ namespace CRM_Sample.Controllers.LocationControllers
             var state = await _context.States.FindAsync(id);
             _context.States.Remove(state);
             await _context.SaveChangesAsync();
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 

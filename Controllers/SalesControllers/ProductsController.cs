@@ -14,8 +14,8 @@ namespace CRM_Sample.Controllers.SalesControllers
     [Authorize]
     public class ProductsController : Controller
     {
+        private const string BIND_STRING = "Id,Name,Description,CategoryId,Currency";
         private readonly ApplicationDbContext _context;
-
         public ProductsController(ApplicationDbContext context)
         {
             _context = context;
@@ -52,32 +52,23 @@ namespace CRM_Sample.Controllers.SalesControllers
         [Authorize(Roles = "SuperAdmin, Director")]
         public IActionResult Create()
         {
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "CategoryName");
+            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "SuperAdmin, Director")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Id,Currency")] Product product)
+        public async Task<IActionResult> Create([Bind(BIND_STRING)] Product product)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "CategoryName",product.CategoryId);
+            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name",product.CategoryId);
 
             return View(product);
         }
@@ -96,18 +87,16 @@ namespace CRM_Sample.Controllers.SalesControllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "CategoryName");
+            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name");
 
             return View(product);
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "SuperAdmin, Director")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Id")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind(BIND_STRING)] Product product)
         {
             if (id != product.Id)
             {
@@ -132,15 +121,9 @@ namespace CRM_Sample.Controllers.SalesControllers
                         throw;
                     }
                 }
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "CategoryName", product.CategoryId);
+            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -172,13 +155,6 @@ namespace CRM_Sample.Controllers.SalesControllers
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 

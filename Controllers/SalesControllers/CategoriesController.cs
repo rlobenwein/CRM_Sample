@@ -12,8 +12,8 @@ namespace CRM_Sample.Controllers.SalesControllers
 {
     public class CategoriesController : Controller
     {
+        private const string BIND_STRING = "Id,Name";
         private readonly ApplicationDbContext _context;
-
         public CategoriesController(ApplicationDbContext context)
         {
             _context = context;
@@ -50,22 +50,14 @@ namespace CRM_Sample.Controllers.SalesControllers
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryName")] Category category)
+        public async Task<IActionResult> Create([Bind(BIND_STRING)] Category category)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -89,11 +81,9 @@ namespace CRM_Sample.Controllers.SalesControllers
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryName")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind(BIND_STRING)] Category category)
         {
             if (id != category.Id)
             {
@@ -118,13 +108,6 @@ namespace CRM_Sample.Controllers.SalesControllers
                         throw;
                     }
                 }
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -156,13 +139,6 @@ namespace CRM_Sample.Controllers.SalesControllers
             var category = await _context.Categories.FindAsync(id);
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 

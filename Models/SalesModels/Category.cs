@@ -11,7 +11,7 @@ namespace CRM_Sample.Models.SalesModels
         [Required]
         [StringLength(50)]
         [Display(Name = "Categoria")]
-        public string CategoryName { get; set; }
+        public string Name { get; set; }
 
         public ICollection<Product> Products { get; set; }
     }

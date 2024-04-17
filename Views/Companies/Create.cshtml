@@ -8,9 +8,8 @@
 <h4>Cliente</h4>
 <hr />
 <form asp-action="Create">
-    <div class="row input-group mb-3">
-        <div class="col-6 col-md-4  mb-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-4">
             <div class="input-group mb-3">
                 <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.FriendlyName)</span>
                 <input asp-for="FriendlyName" class="form-control" />
@@ -31,7 +30,22 @@
                 <input asp-for="Website" class="form-control" />
                 <span asp-validation-for="Website" class="text-danger"></span>
             </div>
-        <div class="col-6 col-md-4  mb-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text">País</span>
+                <select id="Country" class="form-control"  asp-itens="ViewBag.Countries">
+                    <option selected value="0">Selecione</option>
+                </select>
+                <a id="NewCountry" class="btn btn-sm btn-outline-secondary">+</a>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Estado</span>
+                <select id="State" class="form-control">
+                    <option selected value="0">Selecione</option>
+                </select>
+                <a id="NewState" class="btn btn-sm btn-outline-secondary">+</a>
+            </div>
+        </div>
+        <div class="col-md-4">
             <div class="input-group mb-3">
                 <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.MainAddress)</span>
                 <input asp-for="MainAddress" class="form-control" />
@@ -63,10 +77,10 @@
                     <option selected value="0">Selecione</option>
                 </select>
                 <span asp-validation-for="CityId" class="text-danger"></span>
-                <a id="NewCity" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+                <a id="NewCity" class="btn btn-sm btn-outline-secondary">+</a>
             </div>
         </div>
-        <div class="col-6 col-md-4  mb-3">
+        <div class="col-md-4">
             <div class="input-group mb-3">
                 <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.CompanyPhone)</span>
                 <input asp-for="CompanyPhone" class="form-control">
@@ -82,20 +96,16 @@
                 <input asp-for="FinanceEmail" class="form-control">
                 <span asp-validation-for="FinanceEmail" class="text-danger"></span>
             </div>
-
         </div>
-    </div>
-    <div class="row input-group mb-3">
-        <div class="input-group mb-3">
+        <div class="col-md-12">
             <div class="input-group mb-3">
                 <span class="input-group-text"> @Html.DisplayNameFor(modelItem => Model.Notes)</span>
-                <input asp-for="Notes" class="form-control" />
+                <textarea asp-for="Notes" rows="4" class="form-control"></textarea>
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
             </div>
-
             <div class="input-group mb-3">
                 <input type="submit" value="Salvar" class="btn btn-outline-secondary" />
                 <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
@@ -111,21 +121,26 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
+            //console.log('@ViewData.SelectedCountry');
             var url = '@ViewBag.Url/' + 'Locations/';
-            $('#Country').on('change', function() {
+            console.log(url);
+            GetCountriesList(url);
+            $('#Country').on('change', function () {
                 var countryId = $(this).val();
+                $('#City').empty();
+                console.log(url);
                 GetStatesList(url, countryId)
             });
-            $('#State').on('change', function() {
+            $('#State').on('change', function () {
                 var stateId = $(this).val();
                 GetCitiesList(url, stateId);
             });
-            $('#NewCountry').on('click', function() {
+            $('#NewCountry').on('click', function () {
                 var url = '@ViewBag.Url' + '/Countries/Create/';
-                OpenModal(url,'#modal');
+                OpenModal(url, '#modal');
             });
-            $('#NewState').on('click', function() {
+            $('#NewState').on('click', function () {
                 var countryId = $('#Country').val();
                 var url = '@ViewBag.Url' + '/States/Create/' + countryId;
                 if (countryId == 0 || countryId == null) {
@@ -134,7 +149,7 @@
                     OpenModal(url, '#modal');
                 }
             });
-            $('#NewCity').on('click', function() {
+            $('#NewCity').on('click', function () {
                 var stateId = $('#State').val();
                 var url = '@ViewBag.Url' + '/Cities/Create/' + stateId;
                 if (stateId == 0 || stateId == null) {
@@ -143,8 +158,8 @@
                     OpenModal(url, '#modal');
                 }
             });
-            $('#modal').on('shown.bs.modal', function() {
-                $('.saveButton').click(function() {
+            $('#modal').on('shown.bs.modal', function () {
+                $('.saveButton').click(function () {
 
                     console.log('click');
                     location.reload();
@@ -152,12 +167,12 @@
             });
 
         });
-        $(document).on('submit', '.myForm', function(e) {
+        $(document).on('submit', '.myForm', function (e) {
             $.ajax({
                 url: $(this).attr('action'),
                 type: $(this).attr('method'),
                 data: $(this).serialize(),
-                success: function(html) {
+                success: function (html) {
                     window.location.reload(true);
                 }
             });

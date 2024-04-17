@@ -13,7 +13,7 @@ namespace CRM_Sample.Controllers.SalesControllers
 {
     public class ProposalsController : Controller
     {
-        private const string BIND_STRING = "Id,Id,Revision,Date,ExpirationTime,Currency,BasePrice,Discount,Notes,DelireryTime,Status,ManualPrice";
+        private const string BIND_STRING = "Id,OpportunityId,Revision,Date,ExpirationTime,Currency,BasePrice,Discount,Notes,DelireryTime,Status,ManualPrice";
         private readonly ApplicationDbContext _context;
         private readonly DateTimeFunctions _now;
         //private readonly IExchangeRateService _exchangeRate;
@@ -202,12 +202,6 @@ namespace CRM_Sample.Controllers.SalesControllers
                 _context.Add(proposal);
                 await _context.SaveChangesAsync();
 
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
             ViewData["Id"] = new SelectList(_context.Opportunities, "Id", "Id", proposal.OpportunityId);
@@ -237,9 +231,9 @@ namespace CRM_Sample.Controllers.SalesControllers
                                        {
                                            o.Id,
                                            o.Title,
-                                           o.Product.Category.CategoryName,
-                                           o.Product.Name,
-                                           DisplayField = string.Format("{0} ({1})", o.Id, o.Title ?? o.Product.Category.CategoryName + o.Product.Name)
+                                           Category=o.Product.Category.Name,
+                                           Product=o.Product.Name,
+                                           DisplayField = string.Format("{0} ({1})", o.Id, o.Title ?? o.Product.Category.Name + o.Product.Name)
                                        }).ToListAsync();
 
             ViewData["Id"] = new SelectList(opportunities, "Id", "DisplayField", proposal.OpportunityId);
@@ -325,13 +319,6 @@ namespace CRM_Sample.Controllers.SalesControllers
 
             _context.Proposals.Remove(proposal);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
         }
 

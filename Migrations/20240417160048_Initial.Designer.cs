@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRM_Sample.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240416234707_Initial")]
+    [Migration("20240417160048_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -375,7 +375,7 @@ namespace CRM_Sample.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CategoryName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");

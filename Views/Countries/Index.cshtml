@@ -7,7 +7,7 @@
 <h4>Países</h4>
 
 <p>
-    <a class="btn btn-sm btn-outline-secondary" asp-action="Create">Incluir País</a>
+    <a class="btn btn-sm btn-outline-secondary CreateCountry">Incluir País</a>
 </p>
 <table class="table table-striped table-hover">
     <thead>
@@ -45,3 +45,37 @@
         }
     </tbody>
 </table>
+<div id="modal" class="modal fade" role="dialog" />
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        document.addEventListener('keydown', function (event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                console.log('Ctrl+Enter pressed')
+                var activeModal = document.querySelector('#modal.show');
+                console.log('activeModal:', activeModal);
+                if (activeModal) {
+                    var form = activeModal.querySelector('.myForm');
+                    console.log('form: ', form)
+                    if (form) {
+                        form.submit();
+                    }
+                }
+            }
+        });
+        $(document).ready(function () {
+            $("form").removeData("validator");
+            $("form").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse($('form'));
+        })
+        $(document).on('click', '.CreateCountry', function () {
+            var url = '@ViewBag.Url' + '/Countries/Create';
+            console.log(url);
+            OpenModal(url, "#modal");
+        });
+
+    </script>
+}

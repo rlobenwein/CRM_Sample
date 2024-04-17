@@ -1,21 +1,18 @@
-﻿using System;
+﻿using CRM_Sample.Data;
+using CRM_Sample.Models.SalesModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CRM_Sample.Data;
-using CRM_Sample.Models;
-using CRM_Sample.Models.SalesModels;
 
 namespace CRM_Sample.Controllers.CustomerControllers
 {
     public class PipelinesController : Controller
     {
+        private const string BIND_STRING = "Id,Stage";
         private readonly ApplicationDbContext _context;
-
         public PipelinesController(ApplicationDbContext context)
         {
             _context = context;
@@ -52,23 +49,14 @@ namespace CRM_Sample.Controllers.CustomerControllers
         }
 
         // POST: Pipelines/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Stage")] Pipeline pipeline)
+        public async Task<IActionResult> Create([Bind(BIND_STRING)] Pipeline pipeline)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(pipeline);
                 await _context.SaveChangesAsync();
-
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(pipeline);
@@ -91,11 +79,9 @@ namespace CRM_Sample.Controllers.CustomerControllers
         }
 
         // POST: Pipelines/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Stage")] Pipeline pipeline)
+        public async Task<IActionResult> Edit(int id, [Bind(BIND_STRING)] Pipeline pipeline)
         {
             if (id != pipeline.Id)
             {
@@ -120,12 +106,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
                         throw;
                     }
                 }
-                var referer = Request.Headers["Referer"].ToString();
-                if (referer != null)
-                {
-                    return Redirect(referer);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             return View(pipeline);
@@ -159,13 +139,6 @@ namespace CRM_Sample.Controllers.CustomerControllers
             var pipeline = await _context.Pipelines.FindAsync(id);
             _context.Pipelines.Remove(pipeline);
             await _context.SaveChangesAsync();
-
-            var referer = Request.Headers["Referer"].ToString();
-            if (referer != null)
-            {
-                return Redirect(referer);
-            }
-
             return RedirectToAction(nameof(Index));
         }
 
