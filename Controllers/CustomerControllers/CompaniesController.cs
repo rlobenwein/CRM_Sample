@@ -173,7 +173,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     company.LastUpdate = DateTime.Now;
                     _context.Add(company);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Details", "Companies", new { id = company.Id });
                 }
             }
             catch (DbUpdateException ex)

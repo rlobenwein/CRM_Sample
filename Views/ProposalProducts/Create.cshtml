@@ -7,16 +7,13 @@
                 <div class="modal-header">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <h5>Inserir produto na proposta @Model.ProposalId:</h5>
+                    <input type="hidden" asp-for="ProposalId"/>
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                     <hr />
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.ProposalId)</span>
-                                <select asp-for="ProposalId" class="form-control" asp-items="ViewBag.ProposalId" readonly></select>
-                            </div>
                             <div class="form-group">
                                 <span class="input-group-text">@Html.DisplayNameFor(modelItem=>Model.CategoryId)</span>
                                 <select asp-for="CategoryId" class="form-control" id="CategoryId" asp-items="ViewBag.CategoryId"></select>

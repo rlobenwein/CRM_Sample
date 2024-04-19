@@ -322,11 +322,11 @@ namespace CRM_Sample.Controllers.SalesControllers
             };
             if (companyId != null)
             {
-                ViewData["Id"] = new SelectList(_context.Companies.OrderBy(o => o.Id), "Id", "FriendlyName", companyId);
+                ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.Id), "Id", "FriendlyName", companyId);
             }
             else
             {
-                ViewData["Id"] = new SelectList(_context.Companies.OrderBy(o => o.Id), "Id", "FriendlyName");
+                ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(o => o.Id), "Id", "FriendlyName");
             }
 
             GetUrl url = new(HttpContext);

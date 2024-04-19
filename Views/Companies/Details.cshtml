@@ -302,7 +302,6 @@
             });
             e.preventDefault();
         });
-
         $(document).on('click', '.Duplicate', function () {
             var opportunityId = $(this).attr("data-opportunityId");
             var url = '@ViewBag.Url/Opportunities/Duplicate?opportunityId=' + opportunityId;

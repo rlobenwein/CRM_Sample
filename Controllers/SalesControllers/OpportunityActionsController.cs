@@ -74,9 +74,6 @@ namespace CRM_Sample.Controllers.SalesControllers
                 OpportunityId = opportunityId,
                 Date = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time"))
             };
-
-            //ViewData["Id"] = opportunity.CompanyId;
-            //ViewData["Now"] = _now.GetNow();
             CreateViewDataSet(opportunity.CompanyId, opportunityId);
             return PartialView(opportunityActions);
         }
@@ -549,7 +546,7 @@ namespace CRM_Sample.Controllers.SalesControllers
             }
 
 
-            ViewData["Id"] = actionId;
+            ViewData["ActionId"] = actionId;
             CreateViewDataSet(opportunity.CompanyId, opportunityAction.OpportunityId, opportunityAction);
             return PartialView(opportunitiesRelated);
         }

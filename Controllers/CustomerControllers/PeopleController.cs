@@ -149,14 +149,14 @@ namespace CRM_Sample.Controllers.CustomerControllers
             {
                 Status = true
             };
-            ViewData["Id"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
 
             GetUrl url = new(HttpContext);
             ViewData["Url"] = url.GetCurrentUrl();
 
             ViewData["States"] = new SelectList(_context.States.Include(s => s.Country).OrderBy(s => s.Name).AsEnumerable(), "Id", "Name");
             ViewData["Countries"] = new SelectList(_context.Countries.OrderBy(c => c.Name).AsEnumerable(), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Id");
+            ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Id");
             ViewData["Status"] = true;
 
             return PartialView(person);
@@ -174,14 +174,14 @@ namespace CRM_Sample.Controllers.CustomerControllers
             {
                 Status = true
             };
-            ViewData["Id"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
 
             GetUrl url = new(HttpContext);
             ViewData["Url"] = url.GetCurrentUrl();
 
             ViewData["States"] = new SelectList(_context.States.Include(s => s.Country).OrderBy(s => s.Name).AsEnumerable(), "Id", "Name");
             ViewData["Countries"] = new SelectList(_context.Countries.OrderBy(c => c.Name).AsEnumerable(), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Id");
+            ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Id");
             ViewData["Status"] = true;
 
             return PartialView(new PersonDetailsViewModel
@@ -256,10 +256,10 @@ namespace CRM_Sample.Controllers.CustomerControllers
             }
             ViewData["States"] = new SelectList(_context.States.Include(s => s.Country).OrderBy(s => s.Name).AsEnumerable(), "Id", "Name");
             ViewData["Countries"] = new SelectList(_context.Countries.OrderBy(c => c.Name).AsEnumerable(), "Id", "Name");
-            ViewData["Id"] = new SelectList(_context.Pipelines, "Id", "Id");
+            ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Id");
             ViewData["Status"] = true;
 
-            ViewData["Id"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(s => s.Name), "Id", "Name");
 
             GetUrl url = new(HttpContext);
             ViewData["Url"] = url.GetCurrentUrl();

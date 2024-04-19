@@ -433,6 +433,12 @@
             var proposalId = $(this).attr("data-proposalId");
             var url = '@ViewBag.Url' + '/ProposalProducts/Create?proposalId=' + proposalId;
             OpenModal(url, "#modal");
+            console.log($('#CategoryId'));
+            console.log($('#CategoryId').val());
+            console.log('selectedIndex', $('#CategoryId').prop('selectedIndex'));
+            if ($("#CategoryId").prop('selectedIndex') > -1) {
+                console.log('lead products');
+            }
         });
         $(document).on('click', ".ProposalProductEdit", function () {
             var proposalProduct = $(this).attr("data-proposalProduct");
@@ -547,6 +553,7 @@
                 $('#FinalPrice').val(finalPrice);
             };
         });
+
         $(document).on('change', '#CategoryId', function () {
             var url = '@ViewBag.Url/' + 'ProposalProducts/';
             GetProductList($('#CategoryId'), url);

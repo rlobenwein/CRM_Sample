@@ -204,7 +204,7 @@ namespace CRM_Sample.Controllers.SalesControllers
 
                 return RedirectToAction("Details", "Opportunities", new { id = opportunity.Id });
             }
-            ViewData["Id"] = new SelectList(_context.Opportunities, "Id", "Id", proposal.OpportunityId);
+            ViewData["OpportunityId"] = new SelectList(_context.Opportunities, "Id", "Id", proposal.OpportunityId);
             return PartialView(proposal);
         }
 
@@ -236,7 +236,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                                            DisplayField = string.Format("{0} ({1})", o.Id, o.Title ?? o.Product.Category.Name + o.Product.Name)
                                        }).ToListAsync();
 
-            ViewData["Id"] = new SelectList(opportunities, "Id", "DisplayField", proposal.OpportunityId);
+            ViewData["OpportunityId"] = new SelectList(opportunities, "Id", "DisplayField", proposal.OpportunityId);
             ViewData["OpportunityTitle"] = opportunity.Title;
 
             return PartialView(proposal);
@@ -282,7 +282,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                 }
                 return RedirectToAction("Details", "Opportunities", new { id = proposal.OpportunityId });
             }
-            ViewData["Id"] = new SelectList(_context.Opportunities, "Id", "Id", proposal.OpportunityId);
+            ViewData["OpportunityId"] = new SelectList(_context.Opportunities, "Id", "Id", proposal.OpportunityId);
             return PartialView(proposal);
         }
 

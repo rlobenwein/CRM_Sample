@@ -2,10 +2,9 @@
 
 @{
     ViewData["Title"] = "Estados";
-    //Country country = new Country() { Id = (int)ViewData["Id"] };
 }
 
-<h4>Estados/Províncias do país <strong>@ViewData["SelectedCountry"] Id:@ViewData["Id"] </strong></h4>
+<h4>Estados/Províncias do país <strong>@ViewData["SelectedCountry"] Id:@ViewData["CountryId"] </strong></h4>
 
 @if ((string)ViewData["SelectedCountry"] == "Brasil")
 {
@@ -19,7 +18,7 @@
 else
 {
     <p>
-        <a class="btn btn-sm btn-outline-secondary" asp-action="Create" asp-controller="States" asp-route-id="@ViewData["Id"]">Inserir Estado</a>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Create" asp-controller="States" asp-route-id="@ViewData["StateId"]">Inserir Estado</a>
     </p>
 }
 <table class="table table-hover table-striped">

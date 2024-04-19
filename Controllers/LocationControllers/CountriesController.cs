@@ -45,7 +45,7 @@ namespace CRM_Sample.Controllers.LocationControllers
                 return NotFound();
             }
             ViewData["SelectedCountry"] = country.Name;
-            ViewData["Id"] = country.Id;
+            ViewData["CountryId"] = country.Id;
 
             return View(country);
         }

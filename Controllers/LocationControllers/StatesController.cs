@@ -36,7 +36,7 @@ namespace CRM_Sample.Controllers.LocationControllers
             }
 
             ViewData["SelectedCountry"] = country.Name;
-            ViewData["Id"] = country.Id;
+            ViewData["CountryId"] = country.Id;
 
             var states = _context.States
                 .Where(s => s.CountryId == country.Id)
@@ -65,8 +65,8 @@ namespace CRM_Sample.Controllers.LocationControllers
             var country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == state.CountryId);
             ViewData["SelectedCountry"] = country.Name;
             ViewData["SelectedState"] = state.Name;
-            ViewData["Id"] = country.Id;
-            ViewData["Id"] = state.Id;
+            ViewData["CountryId"] = country.Id;
+            ViewData["StateId"] = state.Id;
 
             return View(state);
         }
@@ -114,7 +114,7 @@ namespace CRM_Sample.Controllers.LocationControllers
             {
                 ModelState.AddModelError(string.Empty, "Ocorreu um erro");
             }
-            ViewData["Id"] = new SelectList(_context.Countries, "Id", "Iso3", state.Id);
+            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Iso3", state.Id);
             return RedirectToAction("Index", "Countries");
         }
 
@@ -135,8 +135,8 @@ namespace CRM_Sample.Controllers.LocationControllers
             }
             ViewData["SelectedCountry"] = country.Name;
             ViewData["SelectedState"] = state.Name;
-            ViewData["Id"] = country.Id;
-            ViewData["Id"] = state.Id;
+            ViewData["CountryId"] = country.Id;
+            ViewData["StateId"] = state.Id;
 
             return View(state);
         }
@@ -171,7 +171,7 @@ namespace CRM_Sample.Controllers.LocationControllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Countries, "Id", "Iso3", state.Id);
+            ViewData["CountryId"] = new SelectList(_context.Countries, "CountryId", "Iso3", state.Id);
             return View(state);
         }
 

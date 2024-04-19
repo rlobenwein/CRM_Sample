@@ -55,8 +55,15 @@ namespace CRM_Sample.Controllers.SalesControllers
                 ProposalId = proposal.Id,
                 Discount = 0
             };
-
+            CreateViewData();
             return PartialView(proposalProduct);
+        }
+
+        private void CreateViewData()
+        {
+            var categoriesList = new SelectList(_context.Categories, "Id", "Name");
+            categoriesList.Prepend(new SelectListItem { Text = "Selecione", Value = "0" });
+            ViewData["CategoryId"] = categoriesList.Prepend(new SelectListItem { Text = "Selecione", Value = "0" }); 
         }
 
         // POST: ProposalProducts/Create
@@ -168,7 +175,7 @@ namespace CRM_Sample.Controllers.SalesControllers
         {
             var proposalProduct = await _context.ProposalProducts.FindAsync(id);
             var calcPrices = new Prices(_cache);
-            
+
             Opportunity opportunity = await calcPrices.CalcOpportunityValueAsync(proposalProduct, _context, true);
 
             _context.Update(opportunity);
@@ -202,7 +209,7 @@ namespace CRM_Sample.Controllers.SalesControllers
 
             return Json($"{category} {product}");
         }
-        private void CreateViewData(ProposalProduct proposalProduct=null)
+        private void CreateViewData(ProposalProduct proposalProduct = null)
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", proposalProduct?.CategoryId);
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", proposalProduct?.ProductId);

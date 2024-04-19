@@ -52,7 +52,7 @@ namespace CRM_Sample.Controllers.SalesControllers
         [Authorize(Roles = "SuperAdmin, Director")]
         public IActionResult Create()
         {
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name",product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name",product.CategoryId);
 
             return View(product);
         }
@@ -87,7 +87,7 @@ namespace CRM_Sample.Controllers.SalesControllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
 
             return View(product);
         }
@@ -123,7 +123,7 @@ namespace CRM_Sample.Controllers.SalesControllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 

@@ -31,7 +31,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
             var company = await _context.Companies
                 .FirstOrDefaultAsync(c => c.Id == companyId);
             ViewData["FiendlyName"] = company.FriendlyName;
-            ViewData["Id"] = company.Id;
+            ViewData["CompanyId"] = company.Id;
 
             return View(await companyEmployees.ToListAsync());
         }
@@ -52,22 +52,22 @@ namespace CRM_Sample.Controllers.CustomerControllers
                     .FirstOrDefaultAsync(c => c.Id == companyId);
                 companyEmployee.CompanyId = company.Id;
                 ViewData["FiendlyName"] = company.FriendlyName;
-                ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", company.Id);
+                ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "FriendlyName", company.Id);
             }
             else
             {
-                ViewData["Id"] = new SelectList(_context.Companies.OrderBy(c => c.FriendlyName), "Id", "FriendlyName");
+                ViewData["CompanyId"] = new SelectList(_context.Companies.OrderBy(c => c.FriendlyName), "Id", "FriendlyName");
             }
             if (personId != null)
             {
                 var person = await _context.People
                     .FirstOrDefaultAsync(c => c.Id == personId);
                 companyEmployee.PersonId = person.Id;
-                ViewData["Id"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", person.Id);
+                ViewData["CompanyId"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", person.Id);
             }
             else
             {
-                ViewData["Id"] = new SelectList(_context.People.OrderBy(p=>p.FirstName).ThenBy(p=>p.MiddleName).ThenBy(p=>p.LastName), "Id", "FullName");
+                ViewData["CompanyId"] = new SelectList(_context.People.OrderBy(p=>p.FirstName).ThenBy(p=>p.MiddleName).ThenBy(p=>p.LastName), "Id", "FullName");
             }
             return View(companyEmployee);
         }
@@ -93,8 +93,8 @@ namespace CRM_Sample.Controllers.CustomerControllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Companies", new { id = companyEmployee.CompanyId });
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
-            ViewData["Id"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", companyEmployee.PersonId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
+            ViewData["PersonId"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", companyEmployee.PersonId);
             return View(companyEmployee);
         }
 
@@ -134,8 +134,8 @@ namespace CRM_Sample.Controllers.CustomerControllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
-            ViewData["Id"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", companyEmployee.PersonId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
+            ViewData["PersonId"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", companyEmployee.PersonId);
             return View(companyEmployee);
         }
 
@@ -165,8 +165,8 @@ namespace CRM_Sample.Controllers.CustomerControllers
                 }
                 return RedirectToAction("Details", "Companies", new { id = companyEmployee.CompanyId });
             }
-            ViewData["Id"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
-            ViewData["Id"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", companyEmployee.PersonId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "FriendlyName", companyEmployee.CompanyId);
+            ViewData["PersonId"] = new SelectList(_context.People.OrderBy(p => p.FirstName).ThenBy(p => p.MiddleName).ThenBy(p => p.LastName), "Id", "FullName", companyEmployee.PersonId);
             return View(companyEmployee);
         }
 
