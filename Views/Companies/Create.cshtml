@@ -186,12 +186,10 @@
             });
             $('#modal').on('shown.bs.modal', function () {
                 $('.saveButton').click(function () {
-
                     console.log('click');
                     location.reload();
                 });
             });
-
         });
         $(document).on('submit', '.myForm', function (e) {
             $.ajax({

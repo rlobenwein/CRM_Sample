@@ -1,15 +1,14 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CRM_Sample.Common;
+using CRM_Sample.Data;
+using CRM_Sample.Models.CustomerModels;
+using CRM_Sample.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CRM_Sample.Common;
-using CRM_Sample.Data;
-using CRM_Sample.Models.CustomerModels;
-using CRM_Sample.Models.ViewModels;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CRM_Sample.Controllers.CustomerControllers
 {
@@ -159,7 +158,7 @@ namespace CRM_Sample.Controllers.CustomerControllers
             ViewData["PipelineId"] = new SelectList(_context.Pipelines, "Id", "Id");
             ViewData["Status"] = true;
 
-            return PartialView(person);
+            return View(person);
         }
 
         public async Task<IActionResult> CreateInCompany(int companyId)

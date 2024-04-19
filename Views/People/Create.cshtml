@@ -69,7 +69,7 @@
                 <select id="Country" class="form-control" asp-items="@ViewBag.Countries">
                     <option value="0">Selecione</option>
                 </select>
-                <a id="NewCountry" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+                <a id="NewCountry" class="btn btn-sm btn-outline-secondary">+</a>
             </div>
         </div>
         <div class="col-6 col-md-4  mb-3">
@@ -78,7 +78,7 @@
                 <select id="State" class="form-control" asp-items="@ViewBag.States">
                     <option value="0">Selecione</option>
                 </select>
-                <a id="NewState" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+                <a id="NewState" class="btn btn-sm btn-outline-secondary">+</a>
             </div>
         </div>
         <div class="col-6 col-md-4  mb-3">
@@ -88,7 +88,7 @@
                     <option selected value="0">Selecione</option>
                 </select>
                 <span asp-validation-for="CityId" class="text-danger"></span>
-                <a id="NewCity" class="btn btn-sm btn-outline-secondary">Cadastrar</a>
+                <a id="NewCity" class="btn btn-sm btn-outline-secondary">+</a>
             </div>
         </div>
     </div>
@@ -152,20 +152,50 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var url = '@ViewBag.Url/' + 'Locations/';
-            $('#Country').on('change', function() {
+            getCountriesList(url).then(() => {
+                if (sessionStorage.countryId !== undefined) {
+                    var totalOptions = $('#Country option').length;
+                    var countryId = parseInt(sessionStorage.countryId, 10);
+                    $('#Country').val(countryId).trigger('change');
+                    var selectIndex = $('#Country').prop('selectedIndex');
+
+                    if (selectIndex >= 0 && selectIndex < totalOptions) {
+                        console.log('Country - Selected index updated successfully.');
+                    } else {
+                        console.log('Country - Invalid selectIndex:', selectIndex, 'options:', totalOptions);
+                    }
+                }
+            }).catch((error) => {
+                console.error('Error loading countries', error);
+            });
+            $('#Country').on('change', function () {
                 var countryId = $(this).val();
-                GetStatesList(url, countryId)
+                $('#City').empty();
+                getStatesList(url, countryId).then(() => {
+                    if (sessionStorage.stateId !== undefined) {
+                        var totalOptions = $('#State option').length;
+                        var stateId = parseInt(sessionStorage.stateId, 10);
+                        $('#State').val(stateId).trigger('change');
+                        var selectIndex = $('#State').prop('selectedIndex');
+                        if (selectIndex >= 0 && selectIndex < totalOptions) {
+                            console.log('State: Selected index updated successfully.');
+                        } else {
+                            console.log('State - Invalid selectIndex:', selectIndex, 'options:', totalOptions);
+                        }
+                    }
+                })
             });
-            $('#State').on('change', function() {
+            $('#State').on('change', function () {
                 var stateId = $(this).val();
-                GetCitiesList(url, stateId);
+                getCitiesList(url, stateId);
             });
-            $('#NewCountry').on('click', function() {
+            $('#NewCountry').on('click', function () {
                 var url = '@ViewBag.Url' + '/Countries/Create/';
                 OpenModal(url, '#modal');
             });
-            $('#NewState').on('click', function() {
+            $('#NewState').on('click', function () {
                 var countryId = $('#Country').val();
+                SaveLocationSelecion(countryId);
                 var url = '@ViewBag.Url' + '/States/Create/' + countryId;
                 if (countryId == 0 || countryId == null) {
                     alert("Selecione um país antes de clicar em Cadastrar");
@@ -173,8 +203,9 @@
                     OpenModal(url, '#modal');
                 }
             });
-            $('#NewCity').on('click', function() {
+            $('#NewCity').on('click', function () {
                 var stateId = $('#State').val();
+                SaveLocationSelecion($('#Country').val(), stateId);
                 var url = '@ViewBag.Url' + '/Cities/Create/' + stateId;
                 if (stateId == 0 || stateId == null) {
                     alert("Selecione um estado antes de clicar em Cadastrar");
@@ -182,7 +213,7 @@
                     OpenModal(url, '#modal');
                 }
             });
-            $(function() {
+            $(function () {
                 $('#modal').on('shown.bs.modal', function() {
                     $('#saveButton').click(function() {
                         location.reload();
